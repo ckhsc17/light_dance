@@ -324,8 +324,16 @@ struct Animation {
       case AnimKind::CENTER_OUT:   updateCenter(el);   break;
       case AnimKind::COLORSET_BEAT:                    break;
       case AnimKind::COLORSET_PLUS_PARTS:              break;
-      case AnimKind::SHOW_COLOR:                       break;
-      case AnimKind::MULTI:                            break;
+	  case AnimKind::SHOW_COLOR				           break;
+	case AnimKind::MULTI:
+		bool subActive = false;
+		for (auto& subAnim : subAnimations) {
+			if (subAnim.update()) {
+				subActive = true;
+			}
+		}
+		active = subActive; // If no sub-animations are active, mark this animation as inactive too
+		break;
     }
     return true;
   }
