@@ -276,39 +276,39 @@ struct Animation {
     return a;
   }
 
-  void begin() {
-    startMs = millis();
-    active = true;
-    switch(kind) {
-      case AnimKind::RAINBOW:
-        break;
-      case AnimKind::COLORSET_BEAT:
-        paintColorSet();
-        break;
-      case AnimKind::LTR:
-        break;
-      case AnimKind::RTL:
-        break;
-      case AnimKind::CENTER_OUT:
-        break;
-      case AnimKind::COLORSET_PLUS_PARTS:
-        paintColorSet();
-        for (size_t i = 0; i < extraParts.size(); i++) {
-          showBodyPartNoDelay(*extraParts[i], extraColors[i]);
-        }
-        FastLED.show();
-        break;
-      case AnimKind::SHOW_COLOR:
-        showBodyPartNoDelay(*part, color);
-        FastLED.show();
-        break;
-      case AnimKind::MULTI:
-        for (auto& subAnim : subAnimations) {
-          subAnim.begin();
-        }
-        break;
-    }
-  }
+void begin() {
+	startMs = millis();
+	active = true;
+	switch(kind) {
+		case AnimKind::RAINBOW:
+			break;
+		case AnimKind::COLORSET_BEAT:
+			paintColorSet();
+			break;
+		case AnimKind::LTR:
+			break;
+		case AnimKind::RTL:
+			break;
+		case AnimKind::CENTER_OUT:
+			break;
+		case AnimKind::COLORSET_PLUS_PARTS:
+			paintColorSet();
+			for (size_t i = 0; i < extraParts.size(); i++) {
+				showBodyPartNoDelay(*extraParts[i], extraColors[i]);
+			}
+			FastLED.show();
+			break;
+		case AnimKind::SHOW_COLOR:
+			showBodyPartNoDelay(*part, color);
+			FastLED.show();
+			break;
+		case AnimKind::MULTI:
+			for (auto& subAnim : subAnimations) {
+				subAnim.begin();
+			}
+			break;
+	}
+}
   bool update() {
     if (!active) return false;
     uint32_t now = millis();
@@ -502,7 +502,7 @@ void setup() {
 		FastLED.show();
 
 		Serial.println("✨ LED 147 BPM 拍子開始！");
-		sequence.push_back( PlayStep::Create(Animation::LTR(whole, WHITE_1, BEAT_TIME*8)) );
+		//sequence.push_back( PlayStep::Create(Animation::LTR(whole, WHITE_1, BEAT_TIME*8)) );
 		std::vector<Animation> animations;
 		animations.push_back(Animation::Center(hat, RED_1, BEAT_TIME*4));
 		animations.push_back(Animation::LTR(legs, YELLOW_1, BEAT_TIME*4));
