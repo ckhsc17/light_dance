@@ -13,6 +13,10 @@ def play_music():
     music_path = "light_whatMYB.mp3"
     os.system(f'afplay "{music_path}" &')  # 用 & 背景播放
 
+def play_music3():
+    music_path = "light_whatMYB.mp3"
+    os.system(f'afplay "{music_path}" &')  # 用 & 背景播放
+
 # 停止音樂（afplay 沒有 native 停止，但可以透過 killall 停掉）
 def stop_music():
     os.system("killall afplay")
@@ -25,8 +29,12 @@ def on_message(client, userdata, msg):
     print(f"📨 Received: {msg.payload.decode()}")
     if msg.payload.decode() == "ON":
         play_music()
+    elif msg.payload.decode() == "ON3":
+        play_music3()
     elif msg.payload.decode() == "OFF":
         stop_music()
+    elif msg.payload.decode() == "READY":
+        print("🔌 Connected!")
 
 client = mqtt.Client()
 client.on_connect = on_connect
