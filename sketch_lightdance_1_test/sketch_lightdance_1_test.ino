@@ -486,7 +486,6 @@ void stopEffect() {
 #define BPM 148
 #define BEAT_TIME (60000 / BPM)  // 每拍時間 (毫秒)
 #define BAR_TIME (BEAT_TIME * 4) // 每小節時間 (毫秒)
-#define TOTAL_BARS 8             // 總小節數
 
 int totalSteps = 0;
 int stepIndex  = 0;
@@ -508,11 +507,11 @@ void setup() {
 		animations.push_back(Animation::LTR(legs, YELLOW_1, BEAT_TIME*4));
 		animations.push_back(Animation::RTL(hands, PURPLE_1, BEAT_TIME*4));
 		sequence.push_back(PlayStep::Create(Animation::Multi(animations, BEAT_TIME*4)));
-		/*
+		
 		for (int i = 1; i <= 100; i++){
-				setupPart(i);
+				setupPart_LTDO(i);
 		}
-		*/
+		
 		totalSteps = sequence.size();
 }
 
@@ -529,7 +528,7 @@ if (PERSON == 1) {
 sequence.push_back( PlayStep::LTR(leftHand, CRGB::Blue, BEAT_TIME) );
 */
 
-void setupPart(int partNumber) {
+void setupPart_LTDO(int partNumber) {
 		Serial.println(partNumber);
 
 		switch(partNumber)

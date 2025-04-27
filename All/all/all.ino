@@ -26,17 +26,23 @@ unsigned long nextBeatMillis = 0;
 // 5號 蔡冠毅
 // 6號 蔡仁瑋
 // 7號 蔡承佑
-const int DANCER = 1;
+const int DANCER = 3;
+#define PERSON 3              // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
+
 
 // LED 燈條設定
 #define LED_PIN 13             // LED 燈條 Data Pin (可改成你的 GPIO)
 #define NUM_LEDS 1000           // LED 顆數（請根據你的 LED 燈條數量設定）
-#define BRIGHTNESS 30        // 亮度 (0~255) default 10
+#define BRIGHTNESS 10        // 亮度 (0~255) default 10
 #define LED_TYPE WS2812       // 燈條類型
 #define COLOR_ORDER GRB       // 顏色順序 整首隨機淺色亮色系
-#define PERSON 1                // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
 
 CRGB leds[NUM_LEDS];
+
+// **148 BPM 拍子設定**
+#define BPM 148
+#define BEAT_TIME (60000 / BPM)  // 每拍時間 (毫秒)
+#define BAR_TIME (BEAT_TIME * 4) // 每小節時間 (毫秒)
 
 // **120 BPM 拍子設定**
 #define BPM_2 120
@@ -866,6 +872,10 @@ void setup() {
 
     Serial.println("✨ 載入第二首歌曲");
 		
+    for (int i = 1; i <= 76; i++){
+		setupPart_LTDO(i);
+	}
+
     for (int i = 1; i <= 100; i++){
         setupPart_shutUAD(i);
     }
@@ -901,6 +911,8 @@ void callback(char* topic, byte* message, unsigned int length) {
         Serial.println("開始 LED 表演...");
         // 開始舞蹈特效
         danceRunning = true;
+        stepIndex = 0;
+        delay(1750);
         runAllAnimations();
         danceWhatMYB();
     }
@@ -912,6 +924,7 @@ void callback(char* topic, byte* message, unsigned int length) {
     }
     else if (messageTemp == "OFF") {
         Serial.println("停止 LED 表演...");
+        stepIndex = 200;
         danceRunning = false;  // 設置標誌以中斷舞蹈
         stopEffect();
     }
@@ -986,7 +999,7 @@ void danceWhatMYB() {
     // showColorSetForBeats(COLORSET_3_3, 8000);
     // showColorSetForBeats(whiteAndColorSet(ORANGE_3), 8000);
 
-    delay(200);
+    delay(30);
 
     playIntro(); // 前奏
     if (!shouldContinueDance()) { stopEffect(); return; }
@@ -1561,9 +1574,10 @@ void playMain5() {
         timelineDelay(3 * BEAT_TIME_3 / 2);   
 
         // 熄燈
-        fill_solid(leds, NUM_LEDS, CRGB::Black);
+        FastLED.setBrightness(3);
         FastLED.show();
-        timelineDelay(3 * BEAT_TIME_3 / 2);   
+        timelineDelay(3 * BEAT_TIME_3 / 2);  
+        FastLED.setBrightness(10); 
 
     }
 }
@@ -2368,7 +2382,7 @@ void playMain29() {
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_2);
         }
-        FastLED.setBrightness(15);
+        FastLED.setBrightness(20);
         FastLED.show();
         timelineDelay(BEAT_TIME_3 / 2);
 
@@ -2376,7 +2390,7 @@ void playMain29() {
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_2);
         }
-        FastLED.setBrightness(30);
+        FastLED.setBrightness(40);
         FastLED.show();
         timelineDelay(4 * BEAT_TIME_3 / 2);
     }
@@ -2446,7 +2460,7 @@ void playMain29() {
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_2);
         }
-        FastLED.setBrightness(15);
+        FastLED.setBrightness(20);
         FastLED.show();
         timelineDelay(BEAT_TIME_3 / 2);
 
@@ -2454,7 +2468,7 @@ void playMain29() {
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_2);
         }
-        FastLED.setBrightness(30);
+        FastLED.setBrightness(40);
         FastLED.show();
         timelineDelay(4 * BEAT_TIME_3 / 2);
     }
@@ -2496,7 +2510,7 @@ void playMain29() {
         if(DANCER == 0 or DANCER == 5 or DANCER == 7){ // 5號 蔡冠毅 or 7號 蔡承佑
             fill_solid(leds, NUM_LEDS, SKY_BLUE_3);
         }
-        FastLED.setBrightness(50);
+        FastLED.setBrightness(80);
         FastLED.show();
         timelineDelay(5 * BEAT_TIME_3);
 
@@ -2734,6 +2748,509 @@ void setupPart_shutUAD(int partNumber) {
             stopEffect();
             break;
     }
+}
+
+// 1
+void setupPart_LTDO(int partNumber) {
+		Serial.println(partNumber);
+
+		switch(partNumber)
+		{
+				case 1: 
+					sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*7, 0, 1, 150)) );
+					break;
+				case 2: // 登登登登登登登
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME)) );
+					sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*6, 255, 1, 150)) );
+					break;
+				case 3: // 1號亮
+					if (PERSON == 1)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 4: // 全亮
+						sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*10, 120, 1, 150)) );
+					break;
+				case 5:
+					break;
+				case 6: // Said baby 4567暗 
+					if (PERSON >= 4 && PERSON <= 7)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					break;
+				case 7: // Said baby 全暗 
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
+					break;
+				case 8: // Said baby 全亮 
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
+					break;
+				case 9: 
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
+					break;
+				case 10: // What you doing?
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					break;
+				case 11: // (What you doing?)
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					break;      
+				case 12: // Where you at?
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					break;
+				case 13: // (Where you at?)
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					break;              
+				case 14: // Oh, you got plans?
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					break;
+				case 15: // (You got plans?)
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					break;      
+				case 16: // Don't say that
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					break;
+				case 17: // (shut your trap)
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					break;
+				case 18: // I'm sippin' wine 1 亮 頭黃
+					if (PERSON == 1) {
+						sequence.push_back( PlayStep::Create(Animation::showColorSetPlusParts(ALL_WHITE, { &hat }, {YELLOW_1}, BEAT_TIME*1)) );
+					}
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
+					break;
+				case 19: // (sip sip) 1 亮 領子黃、衣服黃
+					if (PERSON == 1) {
+						sequence.push_back( PlayStep::Create(Animation::showColorSetPlusParts(ALL_WHITE, { &collar }, {YELLOW_1}, BEAT_TIME*1)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSetPlusParts(ALL_WHITE, { &lowerShirt, &leftZipper, &rightZipper, &arms }, {YELLOW_1, YELLOW_1, YELLOW_1, YELLOW_1}, BEAT_TIME*1)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
+					}
+					else 
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3)) );
+					break;
+				case 20: // in a robe
+					if (PERSON == 1)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;    
+				case 21: // (drip, drip)
+					if (PERSON == 1)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 22: // I look too good
+					if (PERSON == 1)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 23: // (look too good)
+					if (PERSON == 1)
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 24: // to be alone
+					if (PERSON == 1)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
+					break;
+				case 25: // (woo woo) 全亮
+					sequence.push_back( PlayStep::Create(Animation::showColorSetPlusParts(ALL_WHITE, { &hands }, {YELLOW_1}, BEAT_TIME*2)) );
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					break;  
+				case 26: // My house clean 1亮
+					if (PERSON == 1)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 27: // (house clean)
+					if (PERSON == 1)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 28: // My pool warm 全亮
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					break;
+				case 29: // (pool warm) 4 2 5 1 6 3 7
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME/2)) );
+					if (PERSON == 2)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME/2)) );
+					if (PERSON == 5)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME/2)) );
+					if (PERSON == 1)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME/2)) );
+					break;
+				case 30: // Just shaved
+					if (PERSON == 6)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME/2)) );
+					if (PERSON == 3)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME/2)) );
+					if (PERSON == 7)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME/2)) );
+					break;
+				case 31: // (smooth like a newborn) // 1亮
+					if (PERSON == 1)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*6)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*6)) );					
+					break;
+				case 32: // We should be dancing 1 3 7亮
+					if (PERSON == 1 || PERSON == 3 || PERSON == 7)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 33: // romancing 1 2 4亮
+					if (PERSON == 1 || PERSON == 2 || PERSON == 4)
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 34: // In the east wing 4亮
+					if (PERSON == 1 || PERSON == 2 || PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					if (PERSON == 4)
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 35: // and the west wing（三連音） 4亮
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*4/3)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*4/3)) );
+					break;
+				case 36: // and the west wing（三連音）
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*4/3)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*4/3)) );
+					break;
+				case 37: // and the west wing（三連音）
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*4/3)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*4/3)) );
+					break;
+				case 38: // Of this mansion
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 39: // what's happening?
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+				break;
+				case 40: // I aint playing 4 7 亮 3 被敲兩下 // 3 YELLOW
+					if (PERSON == 4 || PERSON == 7)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else if (PERSON == 3)
+						for (int i = 0; i < 2; i++){
+							sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, YELLOW_1, BEAT_TIME/2)) );
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+						}
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 41: // no games 1 被敲一下 // 1 PURPLE
+					if (PERSON == 4 || PERSON == 7)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else if (PERSON == 1){
+						sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, PURPLE_1, BEAT_TIME/2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
+					}
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 42: // Every word that 3 被敲兩下 // 3 YELLOW
+					if (PERSON == 4 || PERSON == 7)
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else if (PERSON == 3)
+						for (int i = 0; i < 2; i++){
+							sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, YELLOW_1, BEAT_TIME/2)) );
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+						}
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 43: // I say 1 被敲一下 // 1 PURPLE
+					if (PERSON == 4 || PERSON == 7)
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else if (PERSON == 1){
+						sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, PURPLE_1, BEAT_TIME/2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
+					}
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 44: // Is  6 被敲兩下 // 6 RED
+					if (PERSON == 4 || PERSON == 7)
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else if (PERSON == 6)
+						for (int i = 0; i < 2; i++){
+							sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, RED_1, BEAT_TIME/2)) );
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+						}
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 45: // coming straight 2 被敲一下 // 2 BLUE
+					if (PERSON == 4 || PERSON == 7)
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else if (PERSON == 2){
+						sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, LIGHT_BLUE_1, BEAT_TIME/2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
+					}
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 46: // from the 5 被敲四下, 2 6 3/2拍後被敲一下 // 5 GREEN
+					if (PERSON == 4 || PERSON == 7)
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else if (PERSON == 5){
+						for (int i = 0; i < 4; i++){
+							sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, GREEN_1, BEAT_TIME/4)) );
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/4)) );
+						}
+					}
+					else if (PERSON == 2){
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
+						sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, LIGHT_BLUE_1, BEAT_TIME/2)) );
+					}
+					else if (PERSON == 6){
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
+						sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, RED_1, BEAT_TIME/2)) );
+					}
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 47: // heart 1 3 正拍被敲一下
+					if (PERSON == 4 || PERSON == 7)
+							sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					else if (PERSON == 1) {
+						sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, PURPLE_1, BEAT_TIME/2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
+					} 
+					else if (PERSON == 3) {
+						sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, YELLOW_1, BEAT_TIME/2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
+					} 
+					else 
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 48: // So if you  全亮
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*2)) );
+					break;
+				case 49: // tryna 
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*2)) );
+					break;
+				case 50: // lay in 
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*2)) );
+					break;
+				case 51: // these arms 4亮 其他閃爍 Total:Beat Time*4
+					for (int i = 0; i < 16; i++){
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME/8)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/8)) );
+					}
+					break;
+				case 52: // 
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*2)) );
+					break;
+				case 53: // I'ma 4亮 其他暗
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*2/3)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2/3)) );
+					break;
+				case 54: // leave the 
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*2/3)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2/3)) );
+					break;
+				case 55: // door
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*2/3)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2/3)) );
+					break;
+				case 56: // open
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*6)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*6)) );
+					break;
+				case 57: // (I'ma leave  4 亮，向右踏全亮，轉身暗
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*2)) );
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					break;
+				case 58: // the door open)   第3拍對到彈指 => 每拍向右亮 6 3 7
+					if (PERSON == 4 || PERSON == 6)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*4)) );
+					else if (PERSON == 3)
+					{
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*3)) );
+					} else if (PERSON == 7)
+					{
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*2)) );
+					} else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*4)) );
+					break;
+				case 59: // I'ma leave the   第3拍對到彈指 => 每拍向左亮 5 2 1
+					if (PERSON == 4 || PERSON == 6 || PERSON == 3 || PERSON == 7 || PERSON == 5)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*4)) );
+					else if (PERSON == 2)
+					{
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*3)) );
+					} else if (PERSON == 1)
+					{
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*2)) );
+					}
+					break;
+				case 60: // door open, girl
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*4)) );
+					break;
+				case 61: // (I'ma leave the
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*4)) );
+					break;
+				case 62: // door open   手向左揮可以加特效
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*4)) );
+					break;
+				case 63: // hoping)    手向右揮可以加特效
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*4)) );
+					break;
+				case 64: // That you  七個人交互著閃爍四拍
+					// 
+					if (PERSON == 1)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+				
+					if (PERSON == 5)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+					break;
+				case 65: // feel the
+					if (PERSON == 2)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+					break;
+				case 66: // way I
+					if (PERSON == 3)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+
+					if (PERSON == 7)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+					break;
+				case 67: // feel And
+					if (PERSON == 1)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+
+					if (PERSON == 5)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME/2)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
+					break;
+				case 68: // you 4 亮
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME)) );
+					break;
+				case 69: // want me　
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME)) );
+					break;
+				case 70: // like I
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME)) );
+					break;
+				case 71: // want  
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME)) );
+					break;
+				case 72: // tonight,
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME)) );
+					break;
+				case 73: // bae-
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME)) );
+					break;
+				case 74: // be 第一拍全亮
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*6)) );
+					break;
+				case 75: // (Tell me that you're coming through)
+					sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*8, 0, 1, 150)) );
+					break;
+				case 76: // ooh 4 亮
+					if (PERSON == 4)
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*8)) );
+					else
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*8)) );
+					break;
+				default:
+					stopEffect();
+					break;
+		}
+
 }
 
 // 執行所有動畫序列

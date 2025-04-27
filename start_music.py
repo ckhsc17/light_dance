@@ -10,7 +10,7 @@ MQTT_TOPIC = "LED_TOPIC"
 
 # 播放音樂（請替換成你音樂檔案的絕對路徑）
 def play_music():
-    music_path = "light_whatMYB.mp3"
+    music_path = "Light_Dance.m4a"
     os.system(f'afplay "{music_path}" &')  # 用 & 背景播放
 
 def play_music3():
