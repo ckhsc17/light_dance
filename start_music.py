@@ -4,7 +4,7 @@
 import paho.mqtt.client as mqtt
 import os
 
-MQTT_BROKER = "172.20.10.2" # 記得檢查 IP 是否正確
+MQTT_BROKER = "172.20.10.10" # 記得檢查 IP 是否正確
 MQTT_PORT = 1883
 MQTT_TOPIC = "LED_TOPIC"
 
