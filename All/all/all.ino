@@ -555,7 +555,6 @@ struct Animation {
     a.cs        = &colorset;
     a.duration  = duration;
     return a;
-    Serial.println("showColorSet");
   }
   static Animation LTR(const BodyPart& P, CRGB color, int duration) {
     Animation a;
@@ -674,7 +673,6 @@ private:
     uint8_t frame = (uint32_t)el * 255 / duration;
     for (int i = 0; i < NUM_LEDS; i++)
       leds[i] = CHSV(startHue + frame + i * hueStep, sat, val);
-    Serial.println("updateRainbow");
     FastLED.show();
 
   }
@@ -693,7 +691,6 @@ private:
 				leds[L.start + i] = color;
 			}
 		}
-        Serial.println("LTR");
 		FastLED.show();
 	}
 	
@@ -712,7 +709,6 @@ private:
 				leds[L.start + (L.length - 1 - i)] = color;
 			}
 		}
-        Serial.println("RTL");
 		FastLED.show();
 	}
 	
@@ -738,7 +734,6 @@ private:
 					leds[rightIdx] = color;
 			}
 		}
-        Serial.println("Center");
 		FastLED.show();
 	}
 
@@ -748,7 +743,6 @@ private:
 		for (int i = 0; i < part.numRanges; i++) {
 			fill_solid(&leds[part.ranges[i].start], part.ranges[i].length, color);
 		}
-        Serial.println("showBodyPartNoDelay");
 	}
 	void paintColorSet() {
 		// Whole
@@ -793,7 +787,6 @@ private:
 		showBodyPartNoDelay(feet, cs->feet);
 		showBodyPartNoDelay(leftFoot, cs->leftFoot);
 		showBodyPartNoDelay(rightFoot, cs->rightFoot);
-    Serial.println("paintColorSet");
     FastLED.show();
   }
 };
@@ -2752,9 +2745,8 @@ void setupPart_shutUAD(int partNumber) {
 
 // 1
 void setupPart_LTDO(int partNumber) {
-		Serial.println(partNumber);
-
-		switch(partNumber)
+    Serial.println(partNumber);
+    switch(partNumber)
 		{
 				case 1: 
 					sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*7, 0, 1, 150)) );
@@ -3258,11 +3250,14 @@ void runAllAnimations() {
     while (stepIndex < totalSteps) {
         auto &s = sequence[stepIndex++];
         anim = s.animation;
+        Serial.println("執行動畫序列: " + String(stepIndex) + " / " + String(totalSteps));
+        if (!danceRunning)
+            continue;
         anim.begin();
         
         // 等待當前動畫完成
         while (anim.update()) {
-            delay(10); // 小延遲以允許動畫更新
+            continue;
         }
     }
     
