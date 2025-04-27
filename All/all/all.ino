@@ -1152,7 +1152,7 @@ void playIntro() {
 
         // 亮燈
         fill_solid(leds, NUM_LEDS, CRGB::Black);
-        if(DANCER == 0 or DANCER == 3){ // 3號 小米
+        if(DANCER == 0 or DANCER == 4){ // 4號 許晉誠
             fill_solid(leds, NUM_LEDS, LIGHT_BLUE_3); // 亮藍色
         }
         FastLED.show();
@@ -1169,7 +1169,7 @@ void playIntro() {
         timelineDelay(BEAT_TIME_3 / 2);  // **每拍熄燈時間**
 
         // 亮燈
-        if(DANCER == 0 or DANCER == 3){ // 3號 小米
+        if(DANCER == 0 or DANCER == 4){ // 4號 許晉誠
             fill_solid(leds, NUM_LEDS, LIGHT_GREEN_3); // 亮綠色
         }
         FastLED.show();
@@ -1313,7 +1313,7 @@ void playMain1() {
     }
     Serial.println("🎵 Main 3");
     for (int beat = 3; beat <= 3; beat++) { // Bar 3
-        // heads when
+        // heads when you
         if(DANCER == 0 or DANCER == 1){                     // 1號 花花
             fillColorSet(COLORSET_3_1_2);                   // 1號 花花
             FastLED.show();
@@ -1324,39 +1324,20 @@ void playMain1() {
             fill_solid(leds, NUM_LEDS, CRGB::Black);
             FastLED.show();
             timelineDelay(2 * BEAT_TIME_3);
-        }
+        } 
 
-        // you
+        // walk through the
         if(DANCER == 0 or DANCER == 1){                     // 1號 花花
             fillColorSet(COLORSET_3_1_2);                   // 1號 花花
+            FastLED.show();
+            rainbowBodyPart(hands, 4, 2 * BEAT_TIME_3, 0, 2, 120);
+            nextBeatMillis += 2 * BEAT_TIME_3;
         }
-        else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
-        FastLED.show();
-        timelineDelay(BEAT_TIME_3 / 2);   
-
-        // walk
-        if(DANCER == 0 or DANCER == 1){                     // 1號 花花
-            fillColorSet(COLORSET_3_1_1);                   // 1號 花花
-        }
-        else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
-        FastLED.show();
-        timelineDelay(BEAT_TIME_3);   
-
-        // through
-        if(DANCER == 0 or DANCER == 1){                     // 1號 花花
-            fillColorSet(COLORSET_3_1_1);                   // 1號 花花
-        }
-        else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
-        FastLED.show();
-        timelineDelay(BEAT_TIME_3 / 2);   
-
-        // the
-        if(DANCER == 0 or DANCER == 1){ // 1號 花花
-            fillColorSet(COLORSET_3_1_1);
-        }
-        else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
-        FastLED.show();
-        timelineDelay(BEAT_TIME_3 / 2);   
+        else{
+            fill_solid(leds, NUM_LEDS, CRGB::Black);
+            FastLED.show();
+            timelineDelay(2 * BEAT_TIME_3);
+        } 
     }
     Serial.println("🎵 Main 4");
     for (int beat = 4; beat <= 4; beat++) { // Bar 4
@@ -1473,6 +1454,7 @@ void playMain5() {
         // be-
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_1_1);
+            fillBodyPart(hatMark, PINK_3);
         }
         else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
         FastLED.show();
@@ -1481,6 +1463,7 @@ void playMain5() {
         // ing
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_1_1);
+            fillBodyPart(hatMark, LIGHT_PURPLE_3);
         }
         else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
         FastLED.show();
@@ -1489,6 +1472,7 @@ void playMain5() {
         // the
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_1_1);
+            fillBodyPart(hatMark, SKY_BLUE_3);
         }
         else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
         FastLED.show();
@@ -1499,6 +1483,7 @@ void playMain5() {
         // way
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_1_1);
+            fillBodyPart(hatMark, LIGHT_BLUE_3);
         }
         else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
         FastLED.show();
@@ -1507,6 +1492,7 @@ void playMain5() {
         // that
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_1_1);
+            fillBodyPart(hatMark, PINK_3);
         }
         else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
         FastLED.show();
@@ -1515,6 +1501,7 @@ void playMain5() {
         // you
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_1_1);
+            fillBodyPart(hatMark, LIGHT_PURPLE_3);
         }
         else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
         FastLED.show();
@@ -1523,6 +1510,7 @@ void playMain5() {
         // are
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_1_1);
+            fillBodyPart(hatMark, SKY_BLUE_3);
         }
         else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
         FastLED.show();
@@ -1531,6 +1519,7 @@ void playMain5() {
         // is
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_1_1);
+            fillBodyPart(hatMark, PINK_3);
         }
         else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
         FastLED.show();
@@ -1539,6 +1528,7 @@ void playMain5() {
         // e-
         if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_1_1);
+            fillBodyPart(hatMark, LIGHT_PURPLE_3);
         }
         else{fill_solid(leds, NUM_LEDS, CRGB::Black);}
         FastLED.show();
