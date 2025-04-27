@@ -265,6 +265,7 @@ struct Animation {
     a.cs        = &colorset;
     a.duration  = duration;
     return a;
+    Serial.println("showColorSet");
   }
   static Animation LTR(const BodyPart& P, CRGB color, int duration) {
     Animation a;
@@ -383,7 +384,9 @@ private:
     uint8_t frame = (uint32_t)el * 255 / duration;
     for (int i = 0; i < NUM_LEDS; i++)
       leds[i] = CHSV(startHue + frame + i * hueStep, sat, val);
+    Serial.println("updateRainbow");
     FastLED.show();
+
   }
   // — left→right fill —
   void updateLTR(uint32_t el) {
@@ -400,6 +403,7 @@ private:
 				leds[L.start + i] = color;
 			}
 		}
+        Serial.println("LTR");
 		FastLED.show();
 	}
 	
@@ -418,6 +422,7 @@ private:
 				leds[L.start + (L.length - 1 - i)] = color;
 			}
 		}
+        Serial.println("RTL");
 		FastLED.show();
 	}
 	
@@ -443,6 +448,7 @@ private:
 					leds[rightIdx] = color;
 			}
 		}
+        Serial.println("Center");
 		FastLED.show();
 	}
 
@@ -452,6 +458,7 @@ private:
 		for (int i = 0; i < part.numRanges; i++) {
 			fill_solid(&leds[part.ranges[i].start], part.ranges[i].length, color);
 		}
+        Serial.println("showBodyPartNoDelay");
 	}
 	void paintColorSet() {
 		// Whole
@@ -496,6 +503,7 @@ private:
 		showBodyPartNoDelay(feet, cs->feet);
 		showBodyPartNoDelay(leftFoot, cs->leftFoot);
 		showBodyPartNoDelay(rightFoot, cs->rightFoot);
+    Serial.println("paintColorSet");
     FastLED.show();
   }
 };
@@ -568,13 +576,13 @@ void setupPart(int partNumber) {
     switch (partNumber) {
         case 1:
             // "Ooh, shut up and dance with me" 開頭 12拍
-            for (int i = 0; i < 12; i++) {
-                sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
+            for (int i = 0; i < 8; i++) {
+                sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_4, BEAT_TIME)) );
             }
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_4, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
             break;
 
         case 2:

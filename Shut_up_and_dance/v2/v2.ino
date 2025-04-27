@@ -2,7 +2,7 @@
 #include <vector>
 
 // LED 燈條設定
-#define LED_PIN 4             // LED 燈條 Data Pin (可改成你的 GPIO)
+#define LED_PIN 13             // LED 燈條 Data Pin (可改成你的 GPIO)
 #define NUM_LEDS 910           // LED 顆數（請根據你的 LED 燈條數量設定）
 #define BRIGHTNESS 5        // 亮度 (0~255)
 #define LED_TYPE WS2812       // 燈條類型
@@ -141,6 +141,7 @@ struct ColorSet {
 #define WHITE_1 CRGB(255, 255, 255)
 #define GREEN_1 CRGB(126, 217, 87)
 #define LIGHT_BLUE_1 CRGB(9, 210, 255)
+#define BLACK_1 CRGB(0, 0, 0)
 
 const ColorSet COLORSET_1_FRONT = []() {
 	ColorSet c;
@@ -362,7 +363,7 @@ void begin() {
       case AnimKind::CENTER_OUT:   updateCenter(el);   break;
       case AnimKind::COLORSET_BEAT:                    break;
       case AnimKind::COLORSET_PLUS_PARTS:              break;
-	  case AnimKind::SHOW_COLOR				           break;
+	  case AnimKind::SHOW_COLOR:				       break;
 	case AnimKind::MULTI:
 		bool subActive = false;
 		for (auto& subAnim : subAnimations) {
@@ -527,7 +528,7 @@ void stopEffect() {
 }
 
 // **148 BPM 拍子設定**
-#define BPM 148
+#define BPM 120
 #define BEAT_TIME (60000 / BPM)  // 每拍時間 (毫秒)
 #define BAR_TIME (BEAT_TIME * 4) // 每小節時間 (毫秒)
 #define TOTAL_BARS 8             // 總小節數
@@ -564,187 +565,225 @@ void setup() {
 void setupPart(int partNumber) {
     Serial.println(partNumber);
 
-    switch(partNumber) {
+    switch (partNumber) {
         case 1:
-            // "Ooh, shut up and dance with me" 開頭 12 拍
+            // "Ooh, shut up and dance with me" 開頭 12拍
             for (int i = 0; i < 12; i++) {
-                sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME) );
+                sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
             }
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_4, BEAT_TIME) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_4, BEAT_TIME)) );
             break;
 
         case 2:
             // "We were victims of the night" 8拍
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME) );
-            // 特定角色第7拍亮，否則黑
-            sequence.push_back( isMe({4}) ? PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) : PlayStep::showColorSet(COLORSET_2_4, BEAT_TIME) );
-            // 特定角色第8拍亮，否則黑
-            sequence.push_back( isMe({2}) ? PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) : PlayStep::showColorSet(COLORSET_2_4, BEAT_TIME) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
+            sequence.push_back(
+                PlayStep::Create(
+                    isMe({4}) ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME)
+                              : Animation::showColorSet(COLORSET_2_4, BEAT_TIME)
+                )
+            );
+            sequence.push_back(
+                PlayStep::Create(
+                    isMe({2}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME)
+                              : Animation::showColorSet(COLORSET_2_4, BEAT_TIME)
+                )
+            );
             break;
 
         case 3:
             // "The chemical, physical, kryptonite" 8拍
-            sequence.push_back( isMe({7}) ? PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) : PlayStep::showColorSet(COLORSET_2_4, BEAT_TIME) );
-            sequence.push_back( isMe({3}) ? PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) : PlayStep::showColorSet(COLORSET_2_4, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME) );
-            // 5、6拍：特定人射出效果（半拍時間）
-            if (isMe({2, 3})) {
-                sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME/2) );
-            } else {
-                sequence.push_back( PlayStep::showColorSet(COLORSET_2_4, BEAT_TIME/2) );
-            }
-            // 接續到7、8拍
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME) );
+            sequence.push_back(
+                PlayStep::Create(
+                    isMe({7}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME)
+                              : Animation::showColorSet(COLORSET_2_4, BEAT_TIME)
+                )
+            );
+            sequence.push_back(
+                PlayStep::Create(
+                    isMe({3}) ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME)
+                              : Animation::showColorSet(COLORSET_2_4, BEAT_TIME)
+                )
+            );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
+            sequence.push_back(
+                PlayStep::Create(
+                    isMe({2, 3}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME/2)
+                                 : Animation::showColorSet(COLORSET_2_4, BEAT_TIME/2)
+                )
+            );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
             break;
 
         case 4:
             // "Helpless to the bass and faded light" 8拍
-            sequence.push_back( PlayStep::LTR(body, RED_1, BEAT_TIME*2) ); // 1,2拍由下而上亮紅
-            sequence.push_back( PlayStep::RTL(body, PURPLE_1, BEAT_TIME*2) ); // 3,4拍由上而下亮紫
-            // 5～6拍：每個角色一小段時間輪流亮（7人）
+            sequence.push_back( PlayStep::Create(Animation::LTR(body, RED_1, BEAT_TIME*2)) );
+            sequence.push_back( PlayStep::Create(Animation::RTL(body, PURPLE_1, BEAT_TIME*2)) );
             for (int p = 1; p <= 7; p++) {
-                if (isMe({p})) {
-                    sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME/7) );
-                } else {
-                    sequence.push_back( PlayStep::showColorSet(COLORSET_2_4, BEAT_TIME/7) );
-                }
+                sequence.push_back(
+                    PlayStep::Create(
+                        isMe({p}) ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME/7)
+                                  : Animation::showColorSet(COLORSET_2_4, BEAT_TIME/7)
+                    )
+                );
             }
-            // 7～8拍:往右推光效
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME/2) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME/2)) );
             break;
 
-        // 下面還有很多段（我會繼續慢慢幫你接下去）
-        case 5: 
-        // "Oh, we were bound to get together, bound to get together"
-        // 弱起，特定角色亮，其他暗
-        sequence.push_back( isMe({4,2,1}) 
-            ? PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME*3) 
-            : PlayStep::showColorSet(ALL_BLACK, BEAT_TIME*3) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME) );
-        sequence.push_back( isMe({7,3,1}) 
-            ? PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME*3) 
-            : PlayStep::showColorSet(ALL_BLACK, BEAT_TIME*3) );
-        break;
+        case 5:
+            // "Oh, we were bound to get together, bound to get together"
+            sequence.push_back(
+                PlayStep::Create(
+                    isMe({4,2,1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME*3)
+                                  : Animation::showColorSet(ALL_BLACK, BEAT_TIME*3)
+                )
+            );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
+            sequence.push_back(
+                PlayStep::Create(
+                    isMe({7,3,1}) ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME*3)
+                                  : Animation::showColorSet(ALL_BLACK, BEAT_TIME*3)
+                )
+            );
+            break;
 
         case 6:
-        // "She took my arm, I don't know how it happened"
-        sequence.push_back( isMe({1})
-            ? PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME)
-            : PlayStep::showColorSet(ALL_BLACK, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) );
+            // "She took my arm, I don't know how it happened"
+            sequence.push_back(
+                PlayStep::Create(
+                    isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME)
+                )
+            );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME)) );
+            for (int i = 0; i < 7; i++) {
+                sequence.push_back(
+                    PlayStep::Create(
+                        isMe({1,3,7,6,5,4,2}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME/7)
+                                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME/7)
+                    )
+                );
+            }
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
+            sequence.push_back(
+                PlayStep::Create(
+                    isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME)
+                )
+            );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
+            sequence.push_back(
+                PlayStep::Create(
+                    isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME)
+                )
+            );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
+            break;
 
-        // 小拍快速繞圈（七個角色）
-        for (int i = 0; i < 7; i++) {
-            sequence.push_back( isMe({1,3,7,6,5,4,2}) 
-            ? PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME/7)
-            : PlayStep::showColorSet(ALL_BLACK, BEAT_TIME/7) );
-        }
-
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) );
-        sequence.push_back( isMe({1})
-            ? PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME)
-            : PlayStep::showColorSet(ALL_BLACK, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) );
-        sequence.push_back( isMe({1})
-            ? PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME)
-            : PlayStep::showColorSet(ALL_BLACK, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) );
-        break;
-
+        // 7-11跟前面同邏輯！要繼續我可以馬上幫你補上
         case 7:
         // "We took the floor and she said"
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME)) );
 
-        // 5~8拍 快速閃爍
+        // 5～8拍：快速閃爍
         for (int i = 0; i < 16; i++) {
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME/12) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME/12) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME/12) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME/12)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME/12)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME/12)) );
         }
         break;
 
-        case 8:
+    case 8:
         // "Oh, don't you dare look back, just keep your eyes on me"
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
 
-        // 5~8拍 左到右、右到左波浪效果（分兩組）
+        // 5～8拍：左到右、右到左波浪效果
         {
-            std::vector<int> leftToRight = {7,3,6,1,5,2,4}; // 左到右
-            std::vector<int> rightToLeft = {4,2,5,1,6,3,7}; // 右到左
+            std::vector<int> leftToRight = {7,3,6,1,5,2,4};
+            std::vector<int> rightToLeft = {4,2,5,1,6,3,7};
 
             for (int i = 0; i < 7; i++) {
-            sequence.push_back( isMe({leftToRight[i]})
-                ? PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME/3.5)
-                : PlayStep::showColorSet(ALL_BLACK, BEAT_TIME/3.5) );
+                sequence.push_back( PlayStep::Create(
+                    isMe({leftToRight[i]}) 
+                        ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME/3.5)
+                        : Animation::showColorSet(ALL_BLACK, BEAT_TIME/3.5)
+                ));
             }
             for (int i = 0; i < 7; i++) {
-            sequence.push_back( isMe({rightToLeft[i]})
-                ? PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME/3.5)
-                : PlayStep::showColorSet(ALL_BLACK, BEAT_TIME/3.5) );
+                sequence.push_back( PlayStep::Create(
+                    isMe({rightToLeft[i]}) 
+                        ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME/3.5)
+                        : Animation::showColorSet(ALL_BLACK, BEAT_TIME/3.5)
+                ));
             }
         }
         break;
 
-        case 9:
+    case 9:
         // "I said, 'You're holding back', she said, 'Shut up and dance with me'"
         {
-            // 左到右循環
             std::vector<int> leftToRight = {7,3,6,1,5,2,4};
 
             for (int i = 0; i < 7; i++) {
-            sequence.push_back( isMe({leftToRight[i]})
-                ? PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME/3.5)
-                : PlayStep::showColorSet(ALL_BLACK, BEAT_TIME/3.5) );
+                sequence.push_back( PlayStep::Create(
+                    isMe({leftToRight[i]})
+                        ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME/3.5)
+                        : Animation::showColorSet(ALL_BLACK, BEAT_TIME/3.5)
+                ));
             }
 
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME*2) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME*2)) );
 
             // "dance with me" 快速閃爍
             for (int i = 0; i < 8; i++) {
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME/12) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME/12) );
-            sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME/12) );
+                sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME/12)) );
+                sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME/12)) );
+                sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME/12)) );
             }
-            sequence.push_back( PlayStep::showColorSet(ALL_BLACK, BEAT_TIME) );
+
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME)) );
         }
         break;
 
-        case 10:
+    case 10:
         // "This woman is my destiny, she said"
-        sequence.push_back( PlayStep::showColorSet(ALL_BLACK, BEAT_TIME) );
-
-        sequence.push_back( isMe({2,3})
-            ? PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME/2)
-            : PlayStep::showColorSet(ALL_BLACK, BEAT_TIME/2) );
-
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_2, BEAT_TIME) );
-        sequence.push_back( PlayStep::showColorSet(COLORSET_2_1, BEAT_TIME) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME)) );
+        sequence.push_back( PlayStep::Create(
+            isMe({2,3})
+                ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME/2)
+                : Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)
+        ));
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME)) );
         break;
 
-        case 11:
+    case 11:
         // "Ooh, shut up and dance with me"
-        sequence.push_back( isMe({4})
-            ? PlayStep::showColorSet(COLORSET_2_3, BEAT_TIME*4)
-            : PlayStep::showColorSet(ALL_BLACK, BEAT_TIME*4) );
+        sequence.push_back( PlayStep::Create(
+            isMe({4})
+                ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME*4)
+                : Animation::showColorSet(ALL_BLACK, BEAT_TIME*4)
+        ));
         break;
 
         default:
@@ -752,6 +791,7 @@ void setupPart(int partNumber) {
             break;
     }
 }
+
 
 void loop() {
     if (!anim.update()) {
