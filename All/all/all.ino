@@ -26,8 +26,8 @@ unsigned long nextBeatMillis = 0;
 // 5號 蔡冠毅
 // 6號 蔡仁瑋
 // 7號 蔡承佑
-const int DANCER = 5;
-#define PERSON 5              // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
+const int DANCER = 6;
+#define PERSON 4              // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
 
 
 // LED 燈條設定
@@ -44,8 +44,8 @@ CRGB leds[NUM_LEDS];
 #define BEAT_TIME (60000 / BPM)  // 每拍時間 (毫秒)
 #define BAR_TIME (BEAT_TIME * 4) // 每小節時間 (毫秒)
 
-// **120 BPM 拍子設定**
-#define BPM_2 120
+// **128 BPM 拍子設定**
+#define BPM_2 128
 #define BEAT_TIME_2 (60000 / BPM_2)  // 每拍時間 (毫秒)
 
 // **BPM_3 拍子設定**
@@ -914,6 +914,11 @@ void callback(char* topic, byte* message, unsigned int length) {
     else if (messageTemp == "READY") {
         Serial.println("顯示就緒訊號...");
         showReadySignal();
+    }
+    else if (messageTemp == "TEST") {
+        Serial.println("開始 LED 測試...");
+        // 開始舞蹈特效
+        showColorSetForBeats(COLORSET_3_1_1, 800000);
     }
 }
 
@@ -3227,9 +3232,9 @@ void setupPart_LTDO(int partNumber) {
 					break;
 				case 76: // ooh 4 亮
 					if (PERSON == 4)
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*7.5)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_BACK, BEAT_TIME*7.7)) );
 					else
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*7.5)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*7.7)) );
 					break;
 				default:
 					stopEffect();
