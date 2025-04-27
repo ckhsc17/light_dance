@@ -976,6 +976,7 @@ void loop() {
         reconnect();
     }
     client.loop();
+    
 }
 
 // What Makes You Beautiful 的 LED 執行串
@@ -1239,7 +1240,7 @@ void playIntro() {
 
         // -se-
         fill_solid(leds, NUM_LEDS, CRGB::Black);
-        if(DANCER == 0 or DANCER == 1){ // 1號 花花
+        if(DANCER == 0 or DANCER == 3){ // 3號 小米
             fillColorSet(COLORSET_3_1_1);
         }
         FastLED.show();
@@ -3251,6 +3252,7 @@ void runAllAnimations() {
         auto &s = sequence[stepIndex++];
         anim = s.animation;
         Serial.println("執行動畫序列: " + String(stepIndex) + " / " + String(totalSteps));
+        client.loop();
         if (!danceRunning)
             continue;
         anim.begin();
