@@ -2,6 +2,41 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
+struct ColorSet {
+	CRGB whole      = CRGB::Black;
+	CRGB hat        = CRGB::Black;
+	CRGB hatMark    = CRGB::Black;
+	CRGB collar     = CRGB::Black;
+	CRGB beforeHatMark = CRGB::Black;
+	CRGB afterHatMark = CRGB::Black;
+	CRGB lowerShirt = CRGB::Black;
+	CRGB leftZipper = CRGB::Black;
+	CRGB rightZipper= CRGB::Black;
+	CRGB leftShirt  = CRGB::Black;
+	CRGB rightShirt = CRGB::Black;
+	CRGB shirt      = CRGB::Black;
+	CRGB leftUpperArm = CRGB::Black;
+	CRGB leftLowerArm = CRGB::Black;
+	CRGB rightUpperArm= CRGB::Black;
+	CRGB rightLowerArm= CRGB::Black;
+	CRGB leftArm    = CRGB::Black;
+	CRGB rightArm   = CRGB::Black;
+	CRGB arms       = CRGB::Black;
+	CRGB leftHand   = CRGB::Black;
+	CRGB rightHand  = CRGB::Black;
+	CRGB hands      = CRGB::Black;
+	CRGB body       = CRGB::Black;
+	CRGB leftLeg    = CRGB::Black;
+	CRGB rightLeg   = CRGB::Black;
+	CRGB leftCrotch = CRGB::Black;
+	CRGB rightCrotch= CRGB::Black;
+	CRGB crotch     = CRGB::Black;
+	CRGB legs       = CRGB::Black;
+	CRGB leftFoot   = CRGB::Black;
+	CRGB rightFoot  = CRGB::Black;
+	CRGB feet       = CRGB::Black;
+};
+
 // 函數宣告
 void setup_wifi();
 void callback(char* topic, byte* payload, unsigned int length);
@@ -317,42 +352,6 @@ void initializeLedRangeStarts() {
 #pragma endregion
 
 #pragma region Color definition
-
-struct ColorSet {
-	CRGB whole      = CRGB::Black;
-	CRGB hat        = CRGB::Black;
-	CRGB hatMark    = CRGB::Black;
-	CRGB collar     = CRGB::Black;
-	CRGB beforeHatMark = CRGB::Black;
-	CRGB afterHatMark = CRGB::Black;
-	CRGB lowerShirt = CRGB::Black;
-	CRGB leftZipper = CRGB::Black;
-	CRGB rightZipper= CRGB::Black;
-	CRGB leftShirt  = CRGB::Black;
-	CRGB rightShirt = CRGB::Black;
-	CRGB shirt      = CRGB::Black;
-	CRGB leftUpperArm = CRGB::Black;
-	CRGB leftLowerArm = CRGB::Black;
-	CRGB rightUpperArm= CRGB::Black;
-	CRGB rightLowerArm= CRGB::Black;
-	CRGB leftArm    = CRGB::Black;
-	CRGB rightArm   = CRGB::Black;
-	CRGB arms       = CRGB::Black;
-	CRGB leftHand   = CRGB::Black;
-	CRGB rightHand  = CRGB::Black;
-	CRGB hands      = CRGB::Black;
-	CRGB body       = CRGB::Black;
-	CRGB leftLeg    = CRGB::Black;
-	CRGB rightLeg   = CRGB::Black;
-	CRGB leftCrotch = CRGB::Black;
-	CRGB rightCrotch= CRGB::Black;
-	CRGB crotch     = CRGB::Black;
-	CRGB legs       = CRGB::Black;
-	CRGB leftFoot   = CRGB::Black;
-	CRGB rightFoot  = CRGB::Black;
-	CRGB feet       = CRGB::Black;
-};
-
  
  // 特殊顏色
 const ColorSet ALL_BLACK = []() {
