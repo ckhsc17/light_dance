@@ -82,7 +82,7 @@ unsigned long nextBeatMillis = 0;
 // 7號 蔡承佑
 const int DANCER = 6;
 #define PERSON 1              // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
-
+#define ROLE 4 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
 
 // LED 燈條設定
 #define LED_PIN 13             // LED 燈條 Data Pin (可改成你的 GPIO)
@@ -417,14 +417,13 @@ const ColorSet COLORSET_2_1 = []() {
   const ColorSet COLORSET_2_3 = []() {
     ColorSet c;
     c.feet = RED_1;
-    c.legs = WHITE_1;
-    c.body = RED_1;
-    c.hat = PURPLE_1;
-    c.hands = PURPLE_1;
+    c.legs = YELLOW_1;
+    c.body = PURPLE_1;
+    c.hat = RED_1;
+    c.hands = YELLOW_1;
     return c;
   }();
 
- 
 // 第三首顏色
 #define RED_3 CRGB(255, 10, 10) 
 #define YELLOW_3 CRGB(255, 230, 25)
@@ -889,7 +888,7 @@ enum class AnimKind {
     uint8_t frame = (uint32_t)el * 255 / duration;
     for (int i = 0; i < NUM_LEDS; i++)
       leds[i] = CHSV(startHue + frame + i * hueStep, sat, val);
-    // FastLED.show() will be called in the main loop
+      FastLED.show();
   }
   
   void Animation::updateLTR(uint32_t el) {
@@ -906,7 +905,7 @@ enum class AnimKind {
         leds[L.start + i] = color;
       }
     }
-    // FastLED.show() will be called in the main loop
+    FastLED.show();
   }
   
   void Animation::updateRTL(uint32_t el) {
@@ -923,7 +922,7 @@ enum class AnimKind {
         leds[L.start + (L.length - 1 - i)] = color;
       }
     }
-    // FastLED.show() will be called in the main loop
+    FastLED.show();
   }
   
   void Animation::updateCenter(uint32_t el) {
@@ -945,7 +944,7 @@ enum class AnimKind {
           leds[rightIdx] = color;
       }
     }
-    // FastLED.show() will be called in the main loop
+    FastLED.show();
   }
   
   void Animation::showBodyPartNoDelay(const BodyPart& part, CRGB color) {
@@ -1054,7 +1053,7 @@ enum class AnimKind {
 
 bool isMe(std::initializer_list<int> people) { // Bowen 判斷舞者
     for (int p : people) {
-        if (PERSON == p) return true;
+        if (ROLE == p) return true;
     }
     return false;
 }
@@ -1092,8 +1091,11 @@ void showReadySignal() {
 
 int totalSteps = 0;
 int stepIndex  = 0;
+int secondSongIndex = 0;
 Animation anim;
 std::vector<PlayStep> sequence;
+
+
 
 void setup() {
     Serial.begin(115200);
@@ -1117,7 +1119,7 @@ void setup() {
     for (int i = 1; i <= 76; i++){
 		setupPart_LTDO(i);
 	}
-    Serial.println("size: " + String(sequence.size()));
+    secondSongIndex = sequence.size(); // 記錄第二首歌的起始索引
 
     for (int i = 1; i <= 100; i++){
         setupPart_shutUAD(i);
@@ -1163,7 +1165,7 @@ void callback(char* topic, byte* message, unsigned int length) {
         Serial.println("開始 LED 表演...");
         // 開始舞蹈特效
         danceRunning = true;
-        stepIndex = 118;
+        stepIndex = secondSongIndex;
         runAllAnimations();
         danceWhatMYB();
     }
@@ -1257,7 +1259,7 @@ void danceWhatMYB() {
     // showColorSetForBeats(COLORSET_3_3, 8000);
     // showColorSetForBeats(whiteAndColorSet(ORANGE_3), 8000);
 
-    delay(30);
+    // delay(30);
 
     playIntro(); // 前奏
     if (!shouldContinueDance()) { stopEffect(); return; }
@@ -3020,7 +3022,6 @@ void setupPart_shutUAD(int partNumber) {
             break;
     }
 }
-
 // 1
 
 void setupPart_LTDO(int partNumber) {
@@ -3537,7 +3538,6 @@ void runAllAnimations() {
         // 等待當前動畫完成
         while (anim.update()) {
             // After updating animations, show the LED changes
-            FastLED.show();
             client.loop();
             if (!danceRunning)
                 break;
