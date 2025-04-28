@@ -2,6 +2,25 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
+// 函數宣告
+void setup_wifi();
+void callback(char* topic, byte* payload, unsigned int length);
+void setupPart_LTDO(int partNumber);
+void setupPart_shutUAD(int partNumber);
+void runAllAnimations();
+void danceWhatMYB();
+void stopEffect();
+void playIntro();
+void playMain1();
+void playMain5();
+void playMain9();
+void playMain13();
+void playMain17();
+void playMain21();
+void playMain25();
+void playMain29();
+bool shouldContinueDance();
+
 // WiFi 設定
 const char* ssid = "IMPR";
 const char* password = "pierre2001";
@@ -513,7 +532,8 @@ enum class AnimKind {
   RTL,
   CENTER_OUT,
   SHOW_COLOR,
-  MULTI
+  MULTI,
+  SEQUENTIAL
 };
 
 struct Animation {
@@ -525,261 +545,318 @@ struct Animation {
   const ColorSet* cs;
   const BodyPart* part;
   CRGB            color;
-  std::vector<const BodyPart*> extraParts;
-  std::vector<CRGB>            extraColors;
-  std::vector<Animation>       subAnimations;
+  std::vector<const BodyPart*> extraParts; // 用於 COLORSET_PLUS_PARTS 動畫
+  std::vector<CRGB>            extraColors; // 用於 COLORSET_PLUS_PARTS 動畫
+  std::vector<Animation>       subAnimations; // 用於 multi 和 sequential 動畫
+  int sequentialIndex = 0; // 用於 sequential 動畫
 
-  static Animation Rainbow(int dur, uint8_t startHue = 0, uint8_t hueStep = 1, uint8_t SAT = 255, uint8_t VAL = 255) {
-    Animation a;
-    a.kind      = AnimKind::RAINBOW;
-    a.startHue  = startHue;
-    a.hueStep   = hueStep;
-    a.sat       = SAT;
-    a.val       = VAL;
-    a.duration  = dur;
-    return a;
-  }
-  static Animation showColorSet(const ColorSet& colorset, int duration) {
-    Animation a;
-    a.kind      = AnimKind::COLORSET_BEAT;
-    a.cs        = &colorset;
-    a.duration  = duration;
-    return a;
-  }
-  static Animation LTR(const BodyPart& P, CRGB color, int duration) {
-    Animation a;
-    a.kind      = AnimKind::LTR;
-    a.part      = &P;
-    a.color     = color;
-    a.duration  = duration;
-    return a;
-  }
-  static Animation RTL(const BodyPart& bodyPart, CRGB color, int duration) {
-    Animation a;
-    a.kind      = AnimKind::RTL;
-    a.part      = &bodyPart;
-    a.color     = color;
-    a.duration  = duration;
-    return a;
-  }
-  static Animation Center(const BodyPart& bodyPart, CRGB color, int duration) {
-    Animation a;
-    a.kind      = AnimKind::CENTER_OUT;
-    a.part      = &bodyPart;
-    a.color     = color;
-    a.duration  = duration;
-    return a;
-  }
-  static Animation showColorSetPlusParts(const ColorSet& colorset, const std::vector<const BodyPart*>& extraBodyParts, const std::vector<CRGB>& extraColor, int duration) {
-    Animation a;
-    a.kind       = AnimKind::COLORSET_PLUS_PARTS;
-    a.cs         = &colorset;
-    a.extraParts = extraBodyParts;
-    a.extraColors = extraColor;
-    a.duration   = duration;
-    return a;
-  }
-  static Animation ShowColor(const BodyPart& P, CRGB c, int dur) {
-    Animation a;
-    a.kind     = AnimKind::SHOW_COLOR;
-    a.part     = &P;
-    a.color    = c;
-    a.duration = dur;
-    return a;
-  }
-  static Animation Multi(const std::vector<Animation>& anims, int dur) {
-    Animation a;
-    a.kind = AnimKind::MULTI;
-    a.duration = dur;
-    a.subAnimations = anims;
-    return a;
-  }
-
-void begin() {
-	startMs = millis();
-	active = true;
-	switch(kind) {
-		case AnimKind::RAINBOW:
-			break;
-		case AnimKind::COLORSET_BEAT:
-			paintColorSet();
-			break;
-		case AnimKind::LTR:
-			break;
-		case AnimKind::RTL:
-			break;
-		case AnimKind::CENTER_OUT:
-			break;
-		case AnimKind::COLORSET_PLUS_PARTS:
-			paintColorSet();
-			for (size_t i = 0; i < extraParts.size(); i++) {
-				showBodyPartNoDelay(*extraParts[i], extraColors[i]);
-			}
-			FastLED.show();
-			break;
-		case AnimKind::SHOW_COLOR:
-			showBodyPartNoDelay(*part, color);
-			FastLED.show();
-			break;
-		case AnimKind::MULTI:
-			for (auto& subAnim : subAnimations) {
-				subAnim.begin();
-			}
-			break;
-	}
-}
-  bool update() {
-    if (!active) return false;
-    uint32_t now = millis();
-    uint32_t el  = now - startMs;
-    if (el >= (uint32_t)duration) {
-      active = false;
-      return false;
-    }
-    switch(kind) {
-      case AnimKind::RAINBOW:      updateRainbow(el);  break;
-      case AnimKind::LTR:          updateLTR(el);      break;
-      case AnimKind::RTL:          updateRTL(el);      break;
-      case AnimKind::CENTER_OUT:   updateCenter(el);   break;
-      case AnimKind::COLORSET_BEAT:                    break;
-      case AnimKind::COLORSET_PLUS_PARTS:              break;
-	  case AnimKind::SHOW_COLOR:				       break;
-	case AnimKind::MULTI:
-		bool subActive = false;
-		for (auto& subAnim : subAnimations) {
-			if (subAnim.update()) {
-				subActive = true;
-			}
-		}
-		active = subActive; // If no sub-animations are active, mark this animation as inactive too
-		break;
-    }
-    return true;
-  }
-
+  // 宣告所有成員函式
+  static Animation Rainbow(int dur, uint8_t startHue = 0, uint8_t hueStep = 1, uint8_t SAT = 255, uint8_t VAL = 255);
+  static Animation showColorSet(const ColorSet& colorset, int duration);
+  static Animation LTR(const BodyPart& P, CRGB color, int duration);
+  static Animation RTL(const BodyPart& bodyPart, CRGB color, int duration);
+  static Animation Center(const BodyPart& bodyPart, CRGB color, int duration);
+  static Animation showColorSetPlusParts(const ColorSet& colorset, const std::vector<const BodyPart*>& extraBodyParts, const std::vector<CRGB>& extraColor, int duration);
+  static Animation ShowColor(const BodyPart& P, CRGB c, int dur);
+  static Animation Multi(const std::vector<Animation>& anims, int dur);
+  static Animation Sequential(const std::vector<Animation>& anims, int dur);
+  void begin();
+  bool update();
 private:
-  // — rainbow sweep —
-  void updateRainbow(uint32_t el) {
-    uint8_t frame = (uint32_t)el * 255 / duration;
-    for (int i = 0; i < NUM_LEDS; i++)
-      leds[i] = CHSV(startHue + frame + i * hueStep, sat, val);
-    FastLED.show();
-
-  }
-  // — left→right fill —
-  void updateLTR(uint32_t el) {
-		int maxLen = 0;
-		for (int r = 0; r < part->numRanges; r++)
-			maxLen = max(maxLen, part->ranges[r].length);
-	
-		int step = (uint32_t)el * maxLen / duration;
-		
-		for (int r = 0; r < part->numRanges; r++) {
-			auto& L = part->ranges[r];
-			int fillLen = min(step + 1, L.length);
-			for (int i = 0; i < fillLen; i++) {
-				leds[L.start + i] = color;
-			}
-		}
-		FastLED.show();
-	}
-	
-  // — right→left fill —
-  void updateRTL(uint32_t el) {
-		int maxLen = 0;
-		for (int r = 0; r < part->numRanges; r++)
-			maxLen = max(maxLen, part->ranges[r].length);
-	
-		int step = (uint32_t)el * maxLen / duration;
-	
-		for (int r = 0; r < part->numRanges; r++) {
-			auto& L = part->ranges[r];
-			int fillLen = min(step + 1, L.length);
-			for (int i = 0; i < fillLen; i++) {
-				leds[L.start + (L.length - 1 - i)] = color;
-			}
-		}
-		FastLED.show();
-	}
-	
-
-  // — center-out bloom —
-  void updateCenter(uint32_t el) {
-		for (int r = 0; r < part->numRanges; r++) {
-			auto& L = part->ranges[r];
-			int half = L.length / 2;
-			int fillSize = (uint32_t)el * (half + 1) / duration;
-			fillSize = min(fillSize, half);
-	
-			int mid = L.start + half;
-			
-			// Fill from center outward
-			for (int i = 0; i <= fillSize; i++) {
-				int leftIdx  = mid - i;
-				int rightIdx = mid + i + (L.length % 2 == 0 ? 1 : 0);
-	
-				if (leftIdx >= L.start && leftIdx < L.start + L.length)
-					leds[leftIdx] = color;
-				if (rightIdx >= L.start && rightIdx < L.start + L.length)
-					leds[rightIdx] = color;
-			}
-		}
-		FastLED.show();
-	}
-
-	// ————— non-blocking single-part fill helper —————
-	void showBodyPartNoDelay(const BodyPart& part, CRGB color) {
-		if (color == CRGB::Black && cs != &ALL_BLACK) return;
-		for (int i = 0; i < part.numRanges; i++) {
-			fill_solid(&leds[part.ranges[i].start], part.ranges[i].length, color);
-		}
-	}
-	void paintColorSet() {
-		// Whole
-		showBodyPartNoDelay(whole, cs->whole);
-
-		// Hat
-		showBodyPartNoDelay(hat, cs->hat);
-		showBodyPartNoDelay(hatMark, cs->hatMark);
-
-		// Body (shirt + arms)
-		showBodyPartNoDelay(body, cs->body);
-
-		// Shirt
-		showBodyPartNoDelay(shirt, cs->shirt);
-		showBodyPartNoDelay(lowerShirt, cs->lowerShirt);
-		showBodyPartNoDelay(leftZipper, cs->leftZipper);
-		showBodyPartNoDelay(rightZipper, cs->rightZipper);
-		showBodyPartNoDelay(collar, cs->collar);
-
-		// Arms
-		showBodyPartNoDelay(leftArm, cs->leftArm);
-		showBodyPartNoDelay(rightArm, cs->rightArm);
-		showBodyPartNoDelay(leftUpperArm, cs->leftUpperArm);
-		showBodyPartNoDelay(leftLowerArm, cs->leftLowerArm);
-		showBodyPartNoDelay(rightUpperArm, cs->rightUpperArm);
-		showBodyPartNoDelay(rightLowerArm, cs->rightLowerArm);
-
-		// Hands
-		showBodyPartNoDelay(hands, cs->hands);
-		showBodyPartNoDelay(leftHand, cs->leftHand);
-		showBodyPartNoDelay(rightHand, cs->rightHand);
-
-		// Legs
-		showBodyPartNoDelay(legs, cs->legs);
-		showBodyPartNoDelay(leftLeg, cs->leftLeg);
-		showBodyPartNoDelay(rightLeg, cs->rightLeg);
-		showBodyPartNoDelay(crotch, cs->crotch);
-		showBodyPartNoDelay(leftCrotch, cs->leftCrotch);
-		showBodyPartNoDelay(rightCrotch, cs->rightCrotch);
-
-		// Feet
-		showBodyPartNoDelay(feet, cs->feet);
-		showBodyPartNoDelay(leftFoot, cs->leftFoot);
-		showBodyPartNoDelay(rightFoot, cs->rightFoot);
-    FastLED.show();
-  }
+  void updateRainbow(uint32_t el);
+  void updateLTR(uint32_t el);
+  void updateRTL(uint32_t el);
+  void updateCenter(uint32_t el);
+  void showBodyPartNoDelay(const BodyPart& part, CRGB color);
+  void paintColorSet();
 };
+
+// 定義所有成員函式
+Animation Animation::Rainbow(int dur, uint8_t startHue, uint8_t hueStep, uint8_t SAT, uint8_t VAL) {
+  Animation a;
+  a.kind      = AnimKind::RAINBOW;
+  a.startHue  = startHue;
+  a.hueStep   = hueStep;
+  a.sat       = SAT;
+  a.val       = VAL;
+  a.duration  = dur;
+  return a;
+}
+
+Animation Animation::showColorSet(const ColorSet& colorset, int duration) {
+  Animation a;
+  a.kind      = AnimKind::COLORSET_BEAT;
+  a.cs        = &colorset;
+  a.duration  = duration;
+  return a;
+}
+
+Animation Animation::LTR(const BodyPart& P, CRGB color, int duration) {
+  Animation a;
+  a.kind      = AnimKind::LTR;
+  a.part      = &P;
+  a.color     = color;
+  a.duration  = duration;
+  return a;
+}
+
+Animation Animation::RTL(const BodyPart& bodyPart, CRGB color, int duration) {
+  Animation a;
+  a.kind      = AnimKind::RTL;
+  a.part      = &bodyPart;
+  a.color     = color;
+  a.duration  = duration;
+  return a;
+}
+
+Animation Animation::Center(const BodyPart& bodyPart, CRGB color, int duration) {
+  Animation a;
+  a.kind      = AnimKind::CENTER_OUT;
+  a.part      = &bodyPart;
+  a.color     = color;
+  a.duration  = duration;
+  return a;
+}
+
+Animation Animation::showColorSetPlusParts(const ColorSet& colorset, const std::vector<const BodyPart*>& extraBodyParts, const std::vector<CRGB>& extraColor, int duration) {
+  Animation a;
+  a.kind       = AnimKind::COLORSET_PLUS_PARTS;
+  a.cs         = &colorset;
+  a.extraParts = extraBodyParts;
+  a.extraColors = extraColor;
+  a.duration   = duration;
+  return a;
+}
+
+Animation Animation::ShowColor(const BodyPart& P, CRGB c, int dur) {
+  Animation a;
+  a.kind     = AnimKind::SHOW_COLOR;
+  a.part     = &P;
+  a.color    = c;
+  a.duration = dur;
+  return a;
+}
+
+Animation Animation::Multi(const std::vector<Animation>& anims, int dur) {
+  Animation a;
+  a.kind = AnimKind::MULTI;
+  a.duration = dur;
+  a.subAnimations = anims;
+  return a;
+}
+
+Animation Animation::Sequential(const std::vector<Animation>& anims, int dur) {
+  Animation a;
+  a.kind = AnimKind::SEQUENTIAL;
+  a.duration = dur;
+  a.subAnimations = anims;
+  a.sequentialIndex = 0;
+  return a;
+}
+
+void Animation::begin() {
+  startMs = millis();
+  active = true;
+  switch(kind) {
+    case AnimKind::RAINBOW:
+      break;
+    case AnimKind::COLORSET_BEAT:
+      paintColorSet();
+      break;
+    case AnimKind::LTR:
+      break;
+    case AnimKind::RTL:
+      break;
+    case AnimKind::CENTER_OUT:
+      break;
+    case AnimKind::COLORSET_PLUS_PARTS:
+      paintColorSet();
+      for (size_t i = 0; i < extraParts.size(); i++) {
+        showBodyPartNoDelay(*extraParts[i], extraColors[i]);
+      }
+      FastLED.show();
+      break;
+    case AnimKind::SHOW_COLOR:
+      showBodyPartNoDelay(*part, color);
+      FastLED.show();
+      break;
+    case AnimKind::MULTI:
+      for (auto& subAnim : subAnimations) {
+        subAnim.begin();
+      }
+      break;
+    case AnimKind::SEQUENTIAL:
+      sequentialIndex = 0;
+      if (!subAnimations.empty()) {
+        subAnimations[0].begin();
+      }
+      break;
+  }
+}
+
+bool Animation::update() {
+  if (!active) return false;
+  uint32_t now = millis();
+  uint32_t el  = now - startMs;
+  if (el >= (uint32_t)duration) {
+    active = false;
+    return false;
+  }
+  switch(kind) {
+    case AnimKind::RAINBOW:      updateRainbow(el);  break;
+    case AnimKind::LTR:          updateLTR(el);      break;
+    case AnimKind::RTL:          updateRTL(el);      break;
+    case AnimKind::CENTER_OUT:   updateCenter(el);   break;
+    case AnimKind::COLORSET_BEAT:                    break;
+    case AnimKind::COLORSET_PLUS_PARTS:              break;
+    case AnimKind::SHOW_COLOR:                       break;
+    case AnimKind::MULTI: {
+      bool subActive = false;
+      for (auto& subAnim : subAnimations) {
+        if (subAnim.update()) {
+          subActive = true;
+        }
+      }
+      active = subActive;
+      break;
+    }
+    case AnimKind::SEQUENTIAL: {
+      while (sequentialIndex < subAnimations.size()) {
+        if (subAnimations[sequentialIndex].update()) {
+          break;
+        } else {
+          sequentialIndex++;
+          if (sequentialIndex < subAnimations.size()) {
+            subAnimations[sequentialIndex].begin();
+          }
+        }
+      }
+      if (sequentialIndex >= subAnimations.size()) {
+        active = false;
+        return false;
+      }
+      break;
+    }
+  }
+  return active;
+}
+
+void Animation::updateRainbow(uint32_t el) {
+  uint8_t frame = (uint32_t)el * 255 / duration;
+  for (int i = 0; i < NUM_LEDS; i++)
+    leds[i] = CHSV(startHue + frame + i * hueStep, sat, val);
+  FastLED.show();
+}
+
+void Animation::updateLTR(uint32_t el) {
+  int maxLen = 0;
+  for (int r = 0; r < part->numRanges; r++)
+    maxLen = max(maxLen, part->ranges[r].length);
+
+  int step = (uint32_t)el * maxLen / duration;
+  
+  for (int r = 0; r < part->numRanges; r++) {
+    auto& L = part->ranges[r];
+    int fillLen = min(step + 1, L.length);
+    for (int i = 0; i < fillLen; i++) {
+      leds[L.start + i] = color;
+    }
+  }
+  FastLED.show();
+}
+
+void Animation::updateRTL(uint32_t el) {
+  int maxLen = 0;
+  for (int r = 0; r < part->numRanges; r++)
+    maxLen = max(maxLen, part->ranges[r].length);
+
+  int step = (uint32_t)el * maxLen / duration;
+
+  for (int r = 0; r < part->numRanges; r++) {
+    auto& L = part->ranges[r];
+    int fillLen = min(step + 1, L.length);
+    for (int i = 0; i < fillLen; i++) {
+      leds[L.start + (L.length - 1 - i)] = color;
+    }
+  }
+  FastLED.show();
+}
+
+void Animation::updateCenter(uint32_t el) {
+  for (int r = 0; r < part->numRanges; r++) {
+    auto& L = part->ranges[r];
+    int half = L.length / 2;
+    int fillSize = (uint32_t)el * (half + 1) / duration;
+    fillSize = min(fillSize, half);
+
+    int mid = L.start + half;
+    
+    for (int i = 0; i <= fillSize; i++) {
+      int leftIdx  = mid - i;
+      int rightIdx = mid + i + (L.length % 2 == 0 ? 1 : 0);
+
+      if (leftIdx >= L.start && leftIdx < L.start + L.length)
+        leds[leftIdx] = color;
+      if (rightIdx >= L.start && rightIdx < L.start + L.length)
+        leds[rightIdx] = color;
+    }
+  }
+  FastLED.show();
+}
+
+void Animation::showBodyPartNoDelay(const BodyPart& part, CRGB color) {
+  if (color == CRGB::Black && cs != &ALL_BLACK) return;
+  for (int i = 0; i < part.numRanges; i++) {
+    fill_solid(&leds[part.ranges[i].start], part.ranges[i].length, color);
+  }
+}
+
+void Animation::paintColorSet() {
+  // Whole
+    showBodyPartNoDelay(whole, cs->whole);
+
+    // Hat
+    showBodyPartNoDelay(hat, cs->hat);
+    showBodyPartNoDelay(hatMark, cs->hatMark);
+
+    // Body (shirt + arms)
+    showBodyPartNoDelay(body, cs->body);
+
+    // Shirt
+    showBodyPartNoDelay(shirt, cs->shirt);
+    showBodyPartNoDelay(lowerShirt, cs->lowerShirt);
+    showBodyPartNoDelay(leftZipper, cs->leftZipper);
+    showBodyPartNoDelay(rightZipper, cs->rightZipper);
+    showBodyPartNoDelay(collar, cs->collar);
+
+    // Arms
+    showBodyPartNoDelay(leftArm, cs->leftArm);
+    showBodyPartNoDelay(rightArm, cs->rightArm);
+    showBodyPartNoDelay(leftUpperArm, cs->leftUpperArm);
+    showBodyPartNoDelay(leftLowerArm, cs->leftLowerArm);
+    showBodyPartNoDelay(rightUpperArm, cs->rightUpperArm);
+    showBodyPartNoDelay(rightLowerArm, cs->rightLowerArm);
+
+    // Hands
+    showBodyPartNoDelay(hands, cs->hands);
+    showBodyPartNoDelay(leftHand, cs->leftHand);
+    showBodyPartNoDelay(rightHand, cs->rightHand);
+
+    // Legs
+    showBodyPartNoDelay(legs, cs->legs);
+    showBodyPartNoDelay(leftLeg, cs->leftLeg);
+    showBodyPartNoDelay(rightLeg, cs->rightLeg);
+    showBodyPartNoDelay(crotch, cs->crotch);
+    showBodyPartNoDelay(leftCrotch, cs->leftCrotch);
+    showBodyPartNoDelay(rightCrotch, cs->rightCrotch);
+
+    // Feet
+    showBodyPartNoDelay(feet, cs->feet);
+    showBodyPartNoDelay(leftFoot, cs->leftFoot);
+    showBodyPartNoDelay(rightFoot, cs->rightFoot);
+    FastLED.show();
+  }
+
 
 // ————— PLAYSTEP QUEUE —————
 struct PlayStep {
