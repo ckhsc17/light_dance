@@ -80,14 +80,14 @@ unsigned long nextBeatMillis = 0;
 // 5號 蔡冠毅
 // 6號 蔡仁瑋
 // 7號 蔡承佑
-const int DANCER = 6;
-#define PERSON 4              // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
-#define ROLE 4 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
+const int DANCER = 2;
+#define PERSON 2            // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
+#define ROLE 3 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
 
 // LED 燈條設定
 #define LED_PIN 13             // LED 燈條 Data Pin (可改成你的 GPIO)
 #define NUM_LEDS 1000           // LED 顆數（請根據你的 LED 燈條數量設定）
-#define BRIGHTNESS 10        // 亮度 (0~255) default 10
+#define BRIGHTNESS 7        // 亮度 (0~255) default 10
 #define LED_TYPE WS2812       // 燈條類型
 #define COLOR_ORDER GRB       // 顏色順序 整首隨機淺色亮色系
 
@@ -888,7 +888,7 @@ enum class AnimKind {
     uint8_t frame = (uint32_t)el * 255 / duration;
     for (int i = 0; i < NUM_LEDS; i++)
       leds[i] = CHSV(startHue + frame + i * hueStep, sat, val);
-      FastLED.show();
+    //   FastLED.show();
   }
   
   void Animation::updateLTR(uint32_t el) {
@@ -905,7 +905,7 @@ enum class AnimKind {
         leds[L.start + i] = color;
       }
     }
-    FastLED.show();
+    // FastLED.show();
   }
   
   void Animation::updateRTL(uint32_t el) {
@@ -922,7 +922,7 @@ enum class AnimKind {
         leds[L.start + (L.length - 1 - i)] = color;
       }
     }
-    FastLED.show();
+    // FastLED.show();
   }
   
   void Animation::updateCenter(uint32_t el) {
@@ -944,7 +944,7 @@ enum class AnimKind {
           leds[rightIdx] = color;
       }
     }
-    FastLED.show();
+    // FastLED.show();
   }
   
   void Animation::showBodyPartNoDelay(const BodyPart& part, CRGB color) {
@@ -1115,7 +1115,7 @@ void setup() {
 
     Serial.println("✨ 載入第二首歌曲");
 	initializeLedRangeStarts(); 
-
+    // sequence.push_back(PlayStep::Create(Animation::Sequential(LEFT_TO_RIGHT(PURPLE_1, BEAT_TIME*8))));
     for (int i = 1; i <= 76; i++){
 		setupPart_LTDO(i);
 	}
@@ -1154,6 +1154,7 @@ void callback(char* topic, byte* message, unsigned int length) {
 
     if (messageTemp == "ON") {
         Serial.println("開始 LED 表演...");
+        FastLED.setBrightness(7);
         // 開始舞蹈特效
         danceRunning = true;
         stepIndex = 0;
@@ -1163,15 +1164,20 @@ void callback(char* topic, byte* message, unsigned int length) {
     }
     else if (messageTemp == "ON2") {
         Serial.println("開始 LED 表演...");
+        FastLED.setBrightness(7);
+
         // 開始舞蹈特效
         danceRunning = true;
         stepIndex = secondSongIndex;
+        delay(BEAT_TIME_2);
         runAllAnimations();
         danceWhatMYB();
     }
     else if (messageTemp == "ON3") {
         Serial.println("開始 LED 表演...");
+        FastLED.setBrightness(7);
         // 開始舞蹈特效
+        delay(25);
         danceRunning = true;
         danceWhatMYB();
     }
@@ -2844,7 +2850,7 @@ void setupPart_shutUAD(int partNumber) {
     switch (partNumber) {
         case 1:
             // "Ooh, shut up and dance with me" 開頭 12拍
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*11)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*10)) ); 
 
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
@@ -3072,7 +3078,7 @@ void setupPart_shutUAD(int partNumber) {
                 : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)
         ));
         // 5-8
-        sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2 * 2)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2 * 2.2)) );
         break;
 
         default:
@@ -3597,6 +3603,9 @@ void runAllAnimations() {
         // 等待當前動畫完成
         while (anim.update()) {
             // After updating animations, show the LED changes
+            if (!(anim.kind == AnimKind::SHOW_COLOR || anim.kind == AnimKind::COLORSET_BEAT || anim.kind == AnimKind::COLORSET_BEAT)) {
+                FastLED.show();
+            }
             client.loop();
             if (!danceRunning)
                 break;
