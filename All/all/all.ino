@@ -2856,6 +2856,8 @@ void playMain29() {
 
 #pragma endregion
 
+
+
 // 預寫好sequence 第二首
 void setupPart_shutUAD(int partNumber) {
     Serial.println(partNumber);
@@ -2863,31 +2865,74 @@ void setupPart_shutUAD(int partNumber) {
     switch (partNumber) {
         case 1:
             // "Ooh, shut up and dance with me" 開頭 12拍
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*10)) ); 
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*11)) );
 
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
-            break;
-
-        case 2:
-            // "We were victims of the night" 8拍
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
             sequence.push_back(
                 PlayStep::Create(
-                    isMe({4}) ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)
+                    isMe({4, 2, 1, 3, 7}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)
                               : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
                 )
             );
             sequence.push_back(
                 PlayStep::Create(
-                    isMe({2}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)
+                    isMe({4, 2, 1, 3, 7}) ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                )
+            );
+            sequence.push_back(
+                PlayStep::Create(
+                    isMe({4, 2, 1, 3, 7}) ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                )
+            );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)) );
+            break;
+
+        case 2:
+            // "We were victims of the night" 8拍
+            sequence.push_back( //1,2
+                PlayStep::Create(
+                    isMe({4, 2, 1, 3, 7}) ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2*2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*2)
+                )
+            );
+            // sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
+            sequence.push_back( //3
+                PlayStep::Create(
+                    isMe({4, 2, 1, 3, 7}) ? Animation::LTR(whole, LIGHT_GREEN_3 BEAT_TIME_2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                )
+            );
+            sequence.push_back( //4
+                PlayStep::Create(
+                    isMe({4, 2, 1, 3, 7}) ? Animation::RTL(whole, YELLOW_3, BEAT_TIME_2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                )
+            );
+            sequence.push_back( //5
+                PlayStep::Create(
+                    isMe({4, 2, 1, 3, 7}) ? Animation::LTR(body, PURPLE_1, BEAT_TIME_2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                )
+            );
+            sequence.push_back( //6
+                PlayStep::Create(
+                    isMe({4, 2, 1, 3, 7}) ? Animation::RTL(body, PURPLE_1, BEAT_TIME_2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                )
+            );
+            //sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
+            //sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
+            //sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME_2*2, 100, 1, 150)) );
+            sequence.push_back( //7
+                PlayStep::Create(
+                    isMe({1, 2, 3, 7}) ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                )
+            );
+            sequence.push_back( //8
+                PlayStep::Create(
+                    isMe({1, 3, 7}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)
                               : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
                 )
             );
@@ -2895,70 +2940,109 @@ void setupPart_shutUAD(int partNumber) {
 
         case 3:
             // "The chemical, physical, kryptonite" 8拍
-            sequence.push_back(
+            sequence.push_back( //1
                 PlayStep::Create(
-                    isMe({7}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)
+                    isMe({1,3}) ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)
                               : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
                 )
             );
-            sequence.push_back(
+            sequence.push_back( //2-4
                 PlayStep::Create(
-                    isMe({3}) ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)
+                    isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*3)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*3)
+                )
+            );
+            sequence.push_back( //5-5.5
+                PlayStep::Create(
+                    isMe({1,2,3}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/2)
+                )
+            );
+            sequence.push_back( //5.5-6
+                PlayStep::Create(
+                    isMe({1,4,7}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/2)
+                )
+            );  
+            sequence.push_back( //6-8
+                PlayStep::Create(
+                    isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)
                               : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
                 )
             );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
-            sequence.push_back(
-                PlayStep::Create(
-                    isMe({2, 3}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/2)
-                                 : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/2)
-                )
-            );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
             break;
 
         case 4:
             // "Helpless to the bass and faded light" 8拍
-            sequence.push_back( PlayStep::Create(Animation::LTR(body, RED_1, BEAT_TIME_2*2)) ); //1,2
-            sequence.push_back( PlayStep::Create(Animation::RTL(body, PURPLE_1, BEAT_TIME_2*2)) ); //3,4
-            for (int p = 1; p <= 7; p++) { //5
-                sequence.push_back(
-                    PlayStep::Create(
-                        isMe({p}) ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/7)
-                                  : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/7)
-                    )
-                );
+            // 1~2拍：繞一圈
+            // 3~4拍：隨機亮
+            {
+                std::vector<int> circle = {1,3,7,6,5,4,2};
+                std::vector<int> random = {4,2,5,1,6,3,7};
+
+                for (int i = 0; i < 7; i++) {
+                    sequence.push_back( PlayStep::Create(
+                        isMe({circle[i]}) 
+                            ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/3.5)
+                            : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/3.5)
+                    ));
+                }
+                for (int i = 0; i < 7; i++) {
+                    sequence.push_back( PlayStep::Create(
+                        isMe({rightToLeft[i]}) 
+                            ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/3.5)
+                            : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/3.5)
+                    ));
+                }
             }
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) ); //6
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) ); //7
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2/2)) ); //7-7.5
+
+            sequence.push_back( PlayStep::Create(Animation::LTR(body, RED_1, BEAT_TIME_2*2)) ); //5-6
+
+            sequence.push_back( //6-7.5
+                PlayStep::Create(
+                    isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*1.5)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*1.5)
+                )
+            );
+
+            sequence.push_back( //7.5-8 (bound)
+                PlayStep::Create(
+                    isMe({1,2}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/2)
+                )
+            );
             break;
 
         case 5:
             // "Oh, we were bound to get together, bound to get together"
-            sequence.push_back( //-0.5-2.5
+            sequence.push_back( //1-3.5
                 PlayStep::Create(
-                    isMe({4,2,1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*3)
-                                  : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*3)
+                    isMe({1,2,4}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*3.5)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*3.5)
                 )
-            );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) ); //2.5-3.5
-            sequence.push_back( //3.5-6.5
+            );  
+            sequence.push_back( //3.5-4
                 PlayStep::Create(
-                    isMe({7,3,1}) ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2*3)
-                                  : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*3)
-                )
-            );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) ); //6.5-7.5
-            sequence.push_back( //7.5-8
-                PlayStep::Create(
-                    isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/2)
+                    isMe({1,3}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/2)
                               : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/2)
                 )
             );
+            sequence.push_back( //5-7
+                PlayStep::Create(
+                    isMe({1,3,7}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*4)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)
+                )
+            );
+
+            std::vector<int> random2 = {1,2,3};
+            for (int i = 0; i < 3; i++) {
+                sequence.push_back( PlayStep::Create(
+                    isMe({random2[i]}) 
+                        ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/3)
+                        : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/3)
+                ));
+            }
+
             break;
 
         case 6:
@@ -3028,6 +3112,7 @@ void setupPart_shutUAD(int partNumber) {
                         : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/3.5)
                 ));
             }
+            
             for (int i = 0; i < 7; i++) {
                 sequence.push_back( PlayStep::Create(
                     isMe({rightToLeft[i]}) 
@@ -3091,7 +3176,7 @@ void setupPart_shutUAD(int partNumber) {
                 : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)
         ));
         // 5-8
-        sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2 * 2.2)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2 * 2)) );
         break;
 
         default:
