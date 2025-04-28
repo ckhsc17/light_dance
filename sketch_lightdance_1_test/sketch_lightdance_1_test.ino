@@ -252,79 +252,6 @@ void initializeLedRangeStarts() {
 		Serial.println("WARNING: Calculated LED count doesn't match NUM_LEDS!");
 	}
 }
-// // === WHOLE ===
-// const LedRange wholeRanges[] = { {0, NUM_LEDS} };
-// BodyPart whole = {wholeRanges, 1};
-
-// // === HEAD ===
-// const LedRange hatRanges[] = { {182, 131} }; // 整個帽子
-// const LedRange hatMarkRanges[] = { {0, 5} }; // 帽子上的圈圈
-// BodyPart hat = {hatRanges, 1};
-// BodyPart hatMark = {hatMarkRanges, 1};
-
-// // === SHIRT === // 不包含袖子
-// const LedRange lowerShirtRanges[] = { {0, 62} }; 
-// const LedRange leftZipperRanges[] = { {62, 30} };
-// const LedRange collarRanges[] = { {92, 90} };
-// const LedRange rightZipperRanges[] = { {313, 30} };
-// const LedRange shirtRanges[] = {lowerShirtRanges[0], collarRanges[0], leftZipperRanges[0], rightZipperRanges[0]};
-
-// BodyPart lowerShirt = {lowerShirtRanges, 1};
-// BodyPart leftZipper = {leftZipperRanges, 1};
-// BodyPart collar = {collarRanges, 1};
-// BodyPart rightZipper = {rightZipperRanges, 1};
-// BodyPart shirt = {shirtRanges, 4}; 
-
-// // === ARMS === // 袖子
-// const LedRange leftUpperArmRanges[] = { {505, 60} }; // Upper 包含袖口
-// const LedRange leftLowerArmRanges[] = { {626, 41} };
-// const LedRange rightUpperArmRanges[] = { {445, 60} }; // Upper 包含袖口
-// const LedRange rightLowerArmRanges[] = { {343, 41} };
-// const LedRange leftArmRanges[] = {leftUpperArmRanges[0], leftLowerArmRanges[0]}; // Upper 包含袖口
-// const LedRange rightArmRanges[] = {rightUpperArmRanges[0], rightLowerArmRanges[0]}; // Upper 包含袖口
-// const LedRange armsRanges[] = {leftUpperArmRanges[0], rightUpperArmRanges[0], leftLowerArmRanges[0], rightLowerArmRanges[0] };
-// BodyPart leftUpperArm = {leftUpperArmRanges, 1};
-// BodyPart leftLowerArm = {leftLowerArmRanges, 1};
-// BodyPart rightUpperArm = {rightUpperArmRanges, 1};
-// BodyPart rightLowerArm = {rightLowerArmRanges, 1};
-// BodyPart leftArm = {leftArmRanges, 2};
-// BodyPart rightArm = {rightArmRanges, 2};
-// BodyPart arms = {armsRanges, 4};
-
-// // === BODY === 衣服+袖子
-// const LedRange bodyRanges[] = {lowerShirtRanges[0], collarRanges[0], leftZipperRanges[0], rightZipperRanges[0] , leftUpperArmRanges[0], rightUpperArmRanges[0], leftLowerArmRanges[0], rightLowerArmRanges[0] };
-// BodyPart body = {bodyRanges, 8};
-
-// // === HANDS ===
-// const LedRange leftHandRanges[] = { {565, 61} };
-// const LedRange rightHandRanges[] = { {384, 61} };
-// const LedRange handsRanges[] = {leftHandRanges[0], rightHandRanges[0] };
-// BodyPart leftHand = {leftHandRanges, 1};
-// BodyPart rightHand = {rightHandRanges, 1};
-// BodyPart hands = {handsRanges, 2};
-
-// // === LEGS ===
-// const LedRange leftLegRanges[] = { {667, 52} };
-// const LedRange rightLegRanges[] = { {855, 52} };
-// const LedRange leftCrotchRanges[] = { {749, 38} };
-// const LedRange rightCrotchRanges[] = { {787, 38} };
-// const LedRange crotchRanges[] = {leftCrotchRanges[0], rightCrotchRanges[0] };
-// const LedRange legsRanges[] = {leftLegRanges[0], rightLegRanges[0], leftCrotchRanges[0], rightCrotchRanges[0] };
-// BodyPart leftLeg = {leftLegRanges, 1};
-// BodyPart rightLeg = {rightLegRanges, 1};
-// BodyPart leftCrotch = {leftCrotchRanges, 1};
-// BodyPart rightCrotch = {rightCrotchRanges, 1};
-// BodyPart crotch = {crotchRanges, 1};
-// BodyPart legs = {legsRanges, 4};
-
-// // === FEET ===
-// const LedRange leftFootRanges[] = { {719, 30} };
-// const LedRange rightFootRanges[] = { {825, 30} };
-// const LedRange feetRanges[] = {leftFootRanges[0], rightFootRanges[0] };
-// BodyPart leftFoot = {leftFootRanges, 1};
-// BodyPart rightFoot = {rightFootRanges, 1};
-// BodyPart feet = {feetRanges, 2};
-
 #pragma endregion
 
 #pragma region Color definition
@@ -442,29 +369,29 @@ const ColorSet COLORSET_RAINBOW = []() {
 
 	// 衣服
     c.collar = RAINBOW_YELLOW;    // 黃色
-    c.leftZipper = RAINBOW_GREEN; // 綠色
+    c.leftZipper = RAINBOW_RED; // 綠色
     c.rightZipper = RAINBOW_GREEN; // 藍色
     c.lowerShirt = RAINBOW_INDIGO; // 靛色
     
     // 手臂
     c.leftUpperArm = RAINBOW_VIOLET; // 紫色
     c.leftLowerArm = RAINBOW_PINK;   // 粉紅色
-    c.rightUpperArm = RAINBOW_CYAN;  // 青色
+    c.rightUpperArm = RAINBOW_RED;  // 青色
     c.rightLowerArm = RAINBOW_MAGENTA; // 洋紅色
     
     // 手
-    c.leftHand = RAINBOW_TEAL; // 萊姆色
+    c.leftHand = RAINBOW_RED; // 萊姆色
     c.rightHand = RAINBOW_LIME; // 青色
     
     // 腿
     c.leftLeg = RAINBOW_PURPLE; // 紫色
-    c.rightLeg = RAINBOW_MAROON; // 栗色
+    c.rightLeg = RAINBOW_GREEN; // 栗色
     c.leftCrotch = RAINBOW_NAVY; // 海軍藍
     c.rightCrotch = RAINBOW_RED; // 橄欖色
     
     // 腳
-    c.leftFoot = RAINBOW_AQUA; // 水色
-    c.rightFoot = RAINBOW_FUCHSIA; // 紫紅色
+    c.leftFoot = RAINBOW_RED; // 水色
+    c.rightFoot = RAINBOW_BLUE; // 紫紅色
     
     return c;
 }();
