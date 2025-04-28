@@ -2785,7 +2785,7 @@ void setupPart_shutUAD(int partNumber) {
     switch (partNumber) {
         case 1:
             // "Ooh, shut up and dance with me" 開頭 12拍
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*10)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*11)) );
 
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
@@ -2862,8 +2862,8 @@ void setupPart_shutUAD(int partNumber) {
             // "Oh, we were bound to get together, bound to get together"
             sequence.push_back(
                 PlayStep::Create(
-                    isMe({4,2,1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*4)
-                                  : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)
+                    isMe({4,2,1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*3)
+                                  : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*3)
                 )
             );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
@@ -2884,7 +2884,7 @@ void setupPart_shutUAD(int partNumber) {
                               : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/2)
                 )
             );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) ); //1
             for (int i = 0; i < 7; i++) {
                 sequence.push_back(
                     PlayStep::Create(
@@ -2908,7 +2908,7 @@ void setupPart_shutUAD(int partNumber) {
                 )
             );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
 
             break;
 
@@ -2918,7 +2918,7 @@ void setupPart_shutUAD(int partNumber) {
         sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
         sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
         sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
-        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
+        //sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
 
         // 5～8拍：快速閃爍
         for (int i = 0; i < 16; i++) {
