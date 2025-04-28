@@ -459,64 +459,64 @@ bool Animation::update() {
 void Animation::updateRainbow(uint32_t el) {
   uint8_t frame = (uint32_t)el * 255 / duration;
   for (int i = 0; i < NUM_LEDS; i++)
-    leds[i] = CHSV(startHue + frame + i * hueStep, sat, val);
-  FastLED.show();
+	leds[i] = CHSV(startHue + frame + i * hueStep, sat, val);
+  // FastLED.show() will be called in the main loop
 }
 
 void Animation::updateLTR(uint32_t el) {
   int maxLen = 0;
   for (int r = 0; r < part->numRanges; r++)
-    maxLen = max(maxLen, part->ranges[r].length);
+	maxLen = max(maxLen, part->ranges[r].length);
 
   int step = (uint32_t)el * maxLen / duration;
   
   for (int r = 0; r < part->numRanges; r++) {
-    auto& L = part->ranges[r];
-    int fillLen = min(step + 1, L.length);
-    for (int i = 0; i < fillLen; i++) {
-      leds[L.start + i] = color;
-    }
+	auto& L = part->ranges[r];
+	int fillLen = min(step + 1, L.length);
+	for (int i = 0; i < fillLen; i++) {
+	  leds[L.start + i] = color;
+	}
   }
-  FastLED.show();
+  // FastLED.show() will be called in the main loop
 }
 
 void Animation::updateRTL(uint32_t el) {
   int maxLen = 0;
   for (int r = 0; r < part->numRanges; r++)
-    maxLen = max(maxLen, part->ranges[r].length);
+	maxLen = max(maxLen, part->ranges[r].length);
 
   int step = (uint32_t)el * maxLen / duration;
 
   for (int r = 0; r < part->numRanges; r++) {
-    auto& L = part->ranges[r];
-    int fillLen = min(step + 1, L.length);
-    for (int i = 0; i < fillLen; i++) {
-      leds[L.start + (L.length - 1 - i)] = color;
-    }
+	auto& L = part->ranges[r];
+	int fillLen = min(step + 1, L.length);
+	for (int i = 0; i < fillLen; i++) {
+	  leds[L.start + (L.length - 1 - i)] = color;
+	}
   }
-  FastLED.show();
+  // FastLED.show() will be called in the main loop
 }
 
 void Animation::updateCenter(uint32_t el) {
   for (int r = 0; r < part->numRanges; r++) {
-    auto& L = part->ranges[r];
-    int half = L.length / 2;
-    int fillSize = (uint32_t)el * (half + 1) / duration;
-    fillSize = min(fillSize, half);
+	auto& L = part->ranges[r];
+	int half = L.length / 2;
+	int fillSize = (uint32_t)el * (half + 1) / duration;
+	fillSize = min(fillSize, half);
 
-    int mid = L.start + half;
-    
-    for (int i = 0; i <= fillSize; i++) {
-      int leftIdx  = mid - i;
-      int rightIdx = mid + i + (L.length % 2 == 0 ? 1 : 0);
+	int mid = L.start + half;
+	
+	for (int i = 0; i <= fillSize; i++) {
+	  int leftIdx  = mid - i;
+	  int rightIdx = mid + i + (L.length % 2 == 0 ? 1 : 0);
 
-      if (leftIdx >= L.start && leftIdx < L.start + L.length)
-        leds[leftIdx] = color;
-      if (rightIdx >= L.start && rightIdx < L.start + L.length)
-        leds[rightIdx] = color;
-    }
+	  if (leftIdx >= L.start && leftIdx < L.start + L.length)
+		leds[leftIdx] = color;
+	  if (rightIdx >= L.start && rightIdx < L.start + L.length)
+		leds[rightIdx] = color;
+	}
   }
-  FastLED.show();
+  // FastLED.show() will be called in the main loop
 }
 
 void Animation::showBodyPartNoDelay(const BodyPart& part, CRGB color) {
@@ -570,20 +570,17 @@ struct PlayStep {
 
 std::vector<Animation> LEFT_TO_RIGHT(CRGB color, int duration){
 	std::vector<Animation> animations;
-	int leftDur = duration / 5;
-
-	int midDur = duration * 2 / 5;
+	// Redistribute timing to ensure full duration is used
+	int leftDur = duration / 6;
+	int midDur = duration * 3 / 6;
 	int halfMidDur = midDur / 2;
-
-	int rightDur = duration / 5;
+	int rightDur = duration * 2 / 6;
 	
 	// 左手臂
 	animations.push_back(Animation::Center(leftHand, color, leftDur));
-	animations.push_back(Animation::Multi(
-		{
+	animations.push_back(Animation::Multi({
 			Animation::RTL(leftUpperArm, color, leftDur),
-			Animation::RTL(leftLowerArm, color, leftDur),
-		}
+			Animation::RTL(leftLowerArm, color, leftDur),}
 	));
 
 	// 身體  
@@ -597,39 +594,27 @@ std::vector<Animation> LEFT_TO_RIGHT(CRGB color, int duration){
 			// 部位範圍為左半 跑半個 midDur
 			Animation::Multi({
 					Animation::RTL(leftZipper, color, halfMidDur),
-					Animation::Sequential({
-							Animation::RTL(leftLeg, color, halfMidDur/2),
-							Animation::RTL(leftCrotch, color, halfMidDur/2),
-						}
-					),
+					Animation::LTR(leftLeg, color, halfMidDur),
+					Animation::LTR(leftCrotch, color, halfMidDur),
 					Animation::RTL(leftFoot, color, halfMidDur/2),
-				}
-			),
+				}),
 
 			// 部位範圍為右半 跑半個 midDur
-			Animation::Multi(
-				{
+			Animation::Multi({
 				Animation::RTL(rightZipper, color, halfMidDur),
-				Animation::Sequential({
-						Animation::RTL(rightLeg, color, halfMidDur/2),
-						Animation::RTL(rightCrotch, color, halfMidDur/2),
-					}
-				),
+				Animation::LTR(rightLeg, color, halfMidDur),
+				Animation::LTR(rightCrotch, color, halfMidDur),
 				Animation::RTL(rightFoot, color, halfMidDur/2),
-				}
-				),
-			}
-		),
-		}
-	));
+				}),
+			}),
+		}));
 	// 右手臂
-	animations.push_back(Animation::Center(rightHand, color, rightDur));
 	animations.push_back(Animation::Multi({
-			Animation::RTL(rightUpperArm, color, rightDur),
-			Animation::RTL(rightLowerArm, color, rightDur),
+			Animation::RTL(rightUpperArm, color, rightDur/2),
+			Animation::LTR(rightLowerArm, color, rightDur/2),
 		}
 	));
-	
+	animations.push_back(Animation::Center(rightHand, color, rightDur/2));
 	return animations;
 }	
 
@@ -670,14 +655,14 @@ void setup() {
 		animations.push_back(Animation::RTL(hands, PURPLE_1, BEAT_TIME*4));
 		sequence.push_back(PlayStep::Create(Animation::Multi(animations)));
 		
-
+*/
 		for (int i = 1; i <= 100; i++){
 				setupPart_LTDO(i);
 		}
-		*/
-		sequence.push_back(PlayStep::Create(Animation::Sequential(LEFT_TO_RIGHT(WHITE_1, BEAT_TIME*4))));
+		
+		//sequence.push_back(PlayStep::Create(Animation::Sequential(LEFT_TO_RIGHT(PURPLE_1, BEAT_TIME*4))));
 
-		sequence.push_back(PlayStep::Create(Animation::showColorSet(COLORSET_RAINBOW, 15000)));
+		//sequence.push_back(PlayStep::Create(Animation::showColorSet(COLORSET_RAINBOW, 200000)));
 		totalSteps = sequence.size();
 }
 
@@ -718,10 +703,10 @@ void setupPart_LTDO(int partNumber) {
 					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
 					break;
 				case 9: 
-					sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
 					break;
 				case 10: // What you doing?
-					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
 					break;
 				case 11: // (What you doing?)
 					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
@@ -786,9 +771,9 @@ void setupPart_LTDO(int partNumber) {
 					break;
 				case 24: // to be alone
 					if (PERSON == 1)
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
 					else
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
 					break;
 				case 25: // (woo woo) 全亮
 					sequence.push_back( PlayStep::Create(Animation::showColorSetPlusParts(ALL_WHITE, { &hands }, {YELLOW_1}, BEAT_TIME*2)) );
@@ -796,9 +781,9 @@ void setupPart_LTDO(int partNumber) {
 					break;  
 				case 26: // My house clean 1亮
 					if (PERSON == 1)
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
 					else
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
 					break;
 				case 27: // (house clean)
 					if (PERSON == 1)
@@ -807,7 +792,7 @@ void setupPart_LTDO(int partNumber) {
 						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
 					break;
 				case 28: // My pool warm 全亮
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
 					break;
 				case 29: // (pool warm) 4 2 5 1 6 3 7
 					if (PERSON == 4)
@@ -1186,17 +1171,22 @@ void setupPart_LTDO(int partNumber) {
 
 void loop() {
   if (!anim.update()) {
-    if (stepIndex < totalSteps) {
-      auto &s = sequence[stepIndex++];
-      anim = s.animation;
-      anim.begin();
-    } else {
-      // all done
-      stopEffect();
-      while(true) delay(1000);
-    }
+	if (stepIndex < totalSteps) {
+	  auto &s = sequence[stepIndex++];
+	  anim = s.animation;
+	  anim.begin();
+	} else {
+	  // all done
+	  stopEffect();
+	  while(true) delay(1000);
+	}
   }
-
-  // you can do other non-blocking work here…
+  
+  // After updating animations, show the LED changes
+  FastLED.show();
+  
+  // Add a small delay to prevent overwhelming the LEDs with updates
+  // but not so long that it causes visible lag
+  delayMicroseconds(500);
 }
 
