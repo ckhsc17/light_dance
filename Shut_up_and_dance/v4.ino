@@ -1,3 +1,5 @@
+
+
 // 預寫好sequence 第二首
 void setupPart_shutUAD(int partNumber) {
     Serial.println(partNumber);
@@ -140,14 +142,15 @@ void setupPart_shutUAD(int partNumber) {
         sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
         sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
         sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
-        //sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
 
         // 5～8拍：快速閃爍
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 12; i++) {
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/12)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/12)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2/12)) );
         }
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)) );
         break;
 
     case 8:
@@ -232,7 +235,7 @@ void setupPart_shutUAD(int partNumber) {
                 : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)
         ));
         // 5-8
-        sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2 * 2)) );
         break;
 
         default:

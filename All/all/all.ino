@@ -80,9 +80,9 @@ unsigned long nextBeatMillis = 0;
 // 5號 蔡冠毅
 // 6號 蔡仁瑋
 // 7號 蔡承佑
-const int DANCER = 6;
-#define PERSON 4              // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
-#define ROLE 4 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
+const int DANCER = 1;
+#define PERSON 1             // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
+#define ROLE 1 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
 
 // LED 燈條設定
 #define LED_PIN 13             // LED 燈條 Data Pin (可改成你的 GPIO)
@@ -394,33 +394,46 @@ const ColorSet COLORSET_1_BACK = []() {
 	}();
 
 // 第二首顏色
+#define RED_1 CRGB(253, 4, 10)
+#define YELLOW_2 CRGB(253, 220, 6)
+#define WHITE_1 CRGB(255, 255, 255)
+#define GREEN_1 CRGB(126, 217, 87)
+#define BLACK_2 CRGB(0, 0, 0)
+#define GREEN_2 CRGB(126, 217, 87)
+#define PURPLE_2 CRGB(116, 95, 200)
+#define LIGHT_BLUE_2 CRGB(9, 210, 255)
+#define DARK_BLUE_2 CRGB(0, 74, 173)
+#define PINK_3 CRGB(255, 100, 100)
+#define LIGHT_GREEN_3 CRGB(100, 255, 100)
+#define LIGHT_BLUE_3 CRGB(100, 100, 255)
+
 const ColorSet COLORSET_2_1 = []() {
     ColorSet c;
-    c.feet = PURPLE_1;
-    c.legs = WHITE_1;
-    c.body = RED_1;
-    c.hat = PURPLE_1;
-    c.hands = PURPLE_1;
+    c.feet = DARK_BLUE_2;
+    c.legs = PURPLE_2;
+    c.body = LIGHT_BLUE_2;
+    c.hat = GREEN_1;
+    c.hands = YELLOW_2;
     return c;
   }();
   
   const ColorSet COLORSET_2_2 = []() {
     ColorSet c;
-    c.feet = WHITE_1;
-    c.legs = PURPLE_1;
-    c.body = WHITE_1;
-    c.hat = RED_1;
-    c.hands = RED_1;
+	c.feet = PURPLE_1;
+	c.legs = WHITE_1;
+	c.body = RED_1;
+	c.hat = PURPLE_1;
+	c.hands = PURPLE_1;
     return c;
   }();
   
   const ColorSet COLORSET_2_3 = []() {
     ColorSet c;
-    c.feet = RED_1;
-    c.legs = YELLOW_1;
-    c.body = PURPLE_1;
-    c.hat = RED_1;
-    c.hands = YELLOW_1;
+    c.feet = YELLOW_1;
+    c.legs = LIGHT_YELLOW_3;
+    c.body = LIGHT_GREEN_3;
+    c.hat = PINK_3;
+    c.hands = LIGHT_BLUE_3;
     return c;
   }();
 
