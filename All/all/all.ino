@@ -80,9 +80,9 @@ unsigned long nextBeatMillis = 0;
 // 5號 蔡冠毅
 // 6號 蔡仁瑋
 // 7號 蔡承佑
-const int DANCER = 3;
-#define PERSON 3              // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
-#define ROLE 2 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
+const int DANCER = 6;
+#define PERSON 4              // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
+#define ROLE 4 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
 
 // LED 燈條設定
 #define LED_PIN 13             // LED 燈條 Data Pin (可改成你的 GPIO)
@@ -2715,66 +2715,123 @@ void playMain29() {
     Serial.println("🎵 Main 30");
     for (int beat = 30; beat <= 30; beat++) { // Bar 30
         // You
-        if( DANCER == 1){ // 1號 花花
+        if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_2);
         }
         FastLED.show();
         timelineDelay(BEAT_TIME_3 / 2);
 
         // don't
-        if( DANCER == 1){ // 1號 花花
+        if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_2);
         }
         FastLED.show();
         timelineDelay(BEAT_TIME_3 / 2);
 
         // know
-        if( DANCER == 1){ // 1號 花花
+        if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_2);
         }
         FastLED.show();
         timelineDelay(BEAT_TIME_3 / 2);
 
         // you're
-        if( DANCER == 1){ // 1號 花花
+        if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_2);
         }
         FastLED.show();
         timelineDelay(BEAT_TIME_3 / 2);
 
         // beau-
-        if( DANCER == 1){ // 1號 花花
+        if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_2);
         }
         FastLED.show();
         timelineDelay(3 * BEAT_TIME_3 / 4);
 
         // ti-
-        if( DANCER == 1){ // 1號 花花
+        if(DANCER == 0 or DANCER == 1){ // 1號 花花
             fillColorSet(COLORSET_3_2);
         }
         FastLED.show();
         timelineDelay(3 * BEAT_TIME_3 / 4);
 
         // -ful.
-        if( DANCER == 4 or DANCER == 2){ // 4號 許晉誠 or 2號 徐舒庭
+        if(DANCER == 0 or DANCER == 1){ // 1號 花花
+            fillColorSet(COLORSET_3_2);
+        }
+        FastLED.show();
+        timelineDelay(BEAT_TIME_3 / 2);
+    }
+    Serial.println("🎵 Main 31");
+    for (int beat = 31; beat <= 31; beat++) { // Bar 31
+        // know
+        fill_solid(leds, NUM_LEDS, CRGB::Black);
+        if(DANCER == 0 or DANCER == 1){ // 1號 花花
+            fillColorSet(COLORSET_3_2);
+        }
+        FastLED.setBrightness(5);
+        FastLED.show();
+        timelineDelay(3 * BEAT_TIME_3 / 2);
+
+        // know
+        if(DANCER == 0 or DANCER == 1){ // 1號 花花
+            fillColorSet(COLORSET_3_2);
+        }
+        FastLED.setBrightness(20);
+        FastLED.show();
+        timelineDelay(BEAT_TIME_3 / 2);
+
+        // know
+        if(DANCER == 0 or DANCER == 1){ // 1號 花花
+            fillColorSet(COLORSET_3_2);
+        }
+        FastLED.setBrightness(40);
+        FastLED.show();
+        timelineDelay(4 * BEAT_TIME_3 / 2);
+    }
+    Serial.println("🎵 Main 32");
+    for (int beat = 32; beat <= 32; beat++) { // Bar 32
+        // That's
+        // fill_solid(leds, NUM_LEDS, CRGB::Black);
+        FastLED.show();
+        timelineDelay(BEAT_TIME_3 / 2);
+
+        // what
+        timelineDelay(BEAT_TIME_3 / 2);
+
+        // makes
+        timelineDelay(BEAT_TIME_3 / 2);
+
+        // you
+        timelineDelay(BEAT_TIME_3 / 2);
+
+        // beau-
+        timelineDelay(3 * BEAT_TIME_3 / 4);
+
+        // ti-
+        timelineDelay(3 * BEAT_TIME_3 / 4);
+
+        // -ful.
+        if(DANCER == 0 or DANCER == 1 or DANCER == 2){ // 1號 花花 or 2號 徐舒庭
             fill_solid(leds, NUM_LEDS, BLUE_3);
         }
-        if( DANCER == 1){ // 1號 花花 
+        if(DANCER == 0 or DANCER == 4){ // 4號 許晉誠
             fill_solid(leds, NUM_LEDS, LIGHT_PURPLE_3);
         }
-        if( DANCER == 3){ // 3號 小米
+        if(DANCER == 0 or DANCER == 3){ // 3號 小米
             fill_solid(leds, NUM_LEDS, PINK_3);
         }
-        if( DANCER == 6){ // 6號 蔡仁瑋
+        if(DANCER == 0 or DANCER == 6){ // 6號 蔡仁瑋
             fill_solid(leds, NUM_LEDS, LIGHT_BLUE_3);
         }
-        if( DANCER == 5 or DANCER == 7){ // 5號 蔡冠毅 or 7號 蔡承佑
+        if(DANCER == 0 or DANCER == 5 or DANCER == 7){ // 5號 蔡冠毅 or 7號 蔡承佑
             fill_solid(leds, NUM_LEDS, SKY_BLUE_3);
         }
         FastLED.setBrightness(80);
         FastLED.show();
-        timelineDelay(15 * BEAT_TIME_3);
+        timelineDelay(9 * BEAT_TIME_3);
+
     }
 }
 
@@ -2925,11 +2982,12 @@ void setupPart_shutUAD(int partNumber) {
         sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
 
         // 5～8拍：快速閃爍
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 12; i++) {
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/12)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/12)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2/12)) );
         }
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)) );
         break;
 
     case 8:
