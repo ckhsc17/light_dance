@@ -110,8 +110,6 @@ CRGB leds[NUM_LEDS];
 #pragma region BodyPart definition
  
 // 定義部位
-
-// 定義部位
 struct LedRange { // 注意是 start 跟 **length**
 	int start;
 	int length;
@@ -126,7 +124,6 @@ struct BodyPart {
 	const LedRange* ranges;
 	int numRanges;
 };
-
 
 // === WHOLE ===
 const LedRange wholeRanges[] = { {NUM_LEDS} };
@@ -290,6 +287,7 @@ void initializeLedRangeStarts() {
 	rightFoot = {&ledRanges[17], 1};
 	rightLeg = {&ledRanges[18], 1};
 	
+	// Initialize composite ranges
 	
 	// Hat ranges (combining the three hat parts)
 	hatRangesVec = {ledRanges[3], ledRanges[4], ledRanges[5]};
@@ -356,6 +354,7 @@ void initializeLedRangeStarts() {
  // 特殊顏色
 const ColorSet ALL_BLACK = []() {
 	ColorSet c;
+    c.whole = CRGB::Black;
 	return c;
 }();
 
@@ -1113,10 +1112,12 @@ void setup() {
     Serial.println("設備就緒，等待MQTT命令...");
 
     Serial.println("✨ 載入第二首歌曲");
-		
+	initializeLedRangeStarts(); 
+
     for (int i = 1; i <= 76; i++){
 		setupPart_LTDO(i);
 	}
+    Serial.println("size: " + String(sequence.size()));
 
     for (int i = 1; i <= 100; i++){
         setupPart_shutUAD(i);
@@ -1158,6 +1159,14 @@ void callback(char* topic, byte* message, unsigned int length) {
         runAllAnimations();
         danceWhatMYB();
     }
+    else if (messageTemp == "ON2") {
+        Serial.println("開始 LED 表演...");
+        // 開始舞蹈特效
+        danceRunning = true;
+        stepIndex = 118;
+        runAllAnimations();
+        danceWhatMYB();
+    }
     else if (messageTemp == "ON3") {
         Serial.println("開始 LED 表演...");
         // 開始舞蹈特效
@@ -1170,6 +1179,7 @@ void callback(char* topic, byte* message, unsigned int length) {
         danceRunning = false;  // 設置標誌以中斷舞蹈
         stopEffect();
     }
+    
     else if (messageTemp == "READY") {
         Serial.println("顯示就緒訊號...");
         showReadySignal();
@@ -2775,11 +2785,8 @@ void setupPart_shutUAD(int partNumber) {
     switch (partNumber) {
         case 1:
             // "Ooh, shut up and dance with me" 開頭 12拍
-            for (int i = 0; i < 8; i++) {
-                sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/2)) );
-                sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/2)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*10)) );
 
-            }
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
@@ -2788,7 +2795,7 @@ void setupPart_shutUAD(int partNumber) {
 
         case 2:
             // "We were victims of the night" 8拍
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
@@ -2832,6 +2839,7 @@ void setupPart_shutUAD(int partNumber) {
             );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
             break;
 
         case 4:
@@ -2854,8 +2862,8 @@ void setupPart_shutUAD(int partNumber) {
             // "Oh, we were bound to get together, bound to get together"
             sequence.push_back(
                 PlayStep::Create(
-                    isMe({4,2,1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*3)
-                                  : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*3)
+                    isMe({4,2,1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*4)
+                                  : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)
                 )
             );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
@@ -2865,14 +2873,15 @@ void setupPart_shutUAD(int partNumber) {
                                   : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*3)
                 )
             );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
             break;
 
         case 6:
             // "She took my arm, I don't know how it happened"
             sequence.push_back(
                 PlayStep::Create(
-                    isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)
-                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                    isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/2)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/2)
                 )
             );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
@@ -2884,7 +2893,7 @@ void setupPart_shutUAD(int partNumber) {
                     )
                 );
             }
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) ); //3
             sequence.push_back(
                 PlayStep::Create(
                     isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)
@@ -2899,6 +2908,8 @@ void setupPart_shutUAD(int partNumber) {
                 )
             );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
+
             break;
 
         // 7-11跟前面同邏輯！要繼續我可以馬上幫你補上
@@ -2968,7 +2979,7 @@ void setupPart_shutUAD(int partNumber) {
                 sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2/12)) );
             }
 
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)) );
+            //sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)) );
         }
         break;
 
@@ -2984,15 +2995,19 @@ void setupPart_shutUAD(int partNumber) {
         sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
         sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
         sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
         break;
 
     case 11:
-        // "Ooh, shut up and dance with me"
+        // 1-4 "Ooh, shut up and dance with me"
         sequence.push_back( PlayStep::Create(
             isMe({4})
                 ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2*4)
                 : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)
         ));
+        // 5-8
+        sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)) );
         break;
 
         default:
@@ -3112,8 +3127,7 @@ void setupPart_LTDO(int partNumber) {
 					break;
 				case 25: // (woo woo) 全亮
 					sequence.push_back( PlayStep::Create(Animation::showColorSetPlusParts(ALL_WHITE, { &hands }, {YELLOW_1}, BEAT_TIME*2)) );
-					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
-					break;  
+                    break;  
 				case 26: // My house clean 1亮
 					if (PERSON == 1)
 						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*3/2)) );
@@ -3514,7 +3528,7 @@ void runAllAnimations() {
         if (!danceRunning)
             continue;
         anim.begin();
-        
+        FastLED.show();
         // 等待當前動畫完成
         while (anim.update()) {
             // After updating animations, show the LED changes
