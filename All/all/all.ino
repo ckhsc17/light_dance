@@ -80,9 +80,9 @@ unsigned long nextBeatMillis = 0;
 // 5號 蔡冠毅
 // 6號 蔡仁瑋
 // 7號 蔡承佑
-const int DANCER = 1;
-#define PERSON 1            // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
-#define ROLE 1 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
+const int DANCER = 2;
+#define PERSON 2            // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
+#define ROLE 3 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
 
 // LED 燈條設定
 #define LED_PIN 13             // LED 燈條 Data Pin (可改成你的 GPIO)
@@ -999,7 +999,6 @@ enum class AnimKind {
 	showBodyPartNoDelay(feet, cs->feet);
 	showBodyPartNoDelay(leftFoot, cs->leftFoot);
 	showBodyPartNoDelay(rightFoot, cs->rightFoot);
-	FastLED.show();
 }
 
   
@@ -2902,25 +2901,25 @@ void setupPart_shutUAD(int partNumber) {
             sequence.push_back( //3
                 PlayStep::Create(
                     isMe({4, 2, 1, 3, 7}) ? Animation::LTR(whole, LIGHT_GREEN_3, BEAT_TIME_2)
-                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                              : Animation::LTR(whole, BLACK_1, BEAT_TIME_2)
                 )
             );
             sequence.push_back( //4
                 PlayStep::Create(
                     isMe({4, 2, 1, 3, 7}) ? Animation::RTL(whole, YELLOW_3, BEAT_TIME_2)
-                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                              : Animation::RTL(whole, BLACK_1, BEAT_TIME_2)
                 )
             );
             sequence.push_back( //5
                 PlayStep::Create(
                     isMe({4, 2, 1, 3, 7}) ? Animation::LTR(body, PURPLE_1, BEAT_TIME_2)
-                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                              : Animation::LTR(body, BLACK_1, BEAT_TIME_2)
                 )
             );
             sequence.push_back( //6
                 PlayStep::Create(
                     isMe({4, 2, 1, 3, 7}) ? Animation::RTL(body, PURPLE_1, BEAT_TIME_2)
-                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                              : Animation::RTL(body, BLACK_1, BEAT_TIME_2)
                 )
             );
             //sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) );
@@ -3700,8 +3699,7 @@ void runAllAnimations() {
         client.loop();
         if (!danceRunning)
             continue;
-        anim.begin();
-        
+        anim.begin(); 
         // 等待當前動畫完成
         while (anim.update()) {
             // After updating animations, show the LED changes
