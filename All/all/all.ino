@@ -81,7 +81,7 @@ unsigned long nextBeatMillis = 0;
 // 6號 蔡仁瑋
 // 7號 蔡承佑
 const int DANCER = 6;
-#define PERSON 4              // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
+#define PERSON 1              // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
 
 
 // LED 燈條設定
@@ -3036,7 +3036,7 @@ void setupPart_LTDO(int partNumber) {
                     sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
                 break;
             case 4: // 全亮
-                    sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*10, 120, 1, 150)) );
+                sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*10, 120, 1, 150)) );
                 break;
             case 5:
                 break;
@@ -3121,9 +3121,9 @@ void setupPart_LTDO(int partNumber) {
 					break;
 				case 24: // to be alone
 					if (PERSON == 1)
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*3/2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME/2)) );
 					else
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME/2)) );
 					break;
 				case 25: // (woo woo) 全亮
 					sequence.push_back( PlayStep::Create(Animation::showColorSetPlusParts(ALL_WHITE, { &hands }, {YELLOW_1}, BEAT_TIME*2)) );
@@ -3177,9 +3177,9 @@ void setupPart_LTDO(int partNumber) {
 					break;
 				case 31: // (smooth like a newborn) // 1亮
 					if (PERSON == 1)
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*6)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*8)) );
 					else
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*6)) );					
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*8)) );					
 					break;
 				case 32: // We should be dancing 1 3 7亮
 					if (PERSON == 1 || PERSON == 3 || PERSON == 7)
