@@ -75,138 +75,284 @@ CRGB leds[NUM_LEDS];
 #pragma region BodyPart definition
  
 // 定義部位
+
+// 定義部位
 struct LedRange { // 注意是 start 跟 **length**
-  int start;
-  int length;
+	int start;
+	int length;
+	// Constructor that defaults start to 0
+	LedRange(int length) : start(0), length(length) {}
+
+	// Constructor with explicit start and length
+	LedRange(int start, int length) : start(start), length(length) {}
 };
- 
+
 struct BodyPart {
-  const LedRange* ranges;
-  int numRanges;
+	const LedRange* ranges;
+	int numRanges;
 };
+
 
 // === WHOLE ===
-const LedRange wholeRanges[] = { {0, NUM_LEDS} };
-BodyPart whole = {wholeRanges, 1};
- 
-// === HEAD ===
-const LedRange hatRanges[] = { {182, 131} }; // 整個帽子
-const LedRange hatMarkRanges[] = { {280, 28} }; // 帽子上的圈圈
-BodyPart hat = {hatRanges, 1};
-BodyPart hatMark = {hatMarkRanges, 1};
+const LedRange wholeRanges[] = { {NUM_LEDS} };
+BodyPart whole ;
+
+// === HAT === 共 131
+const LedRange beforeHatMarkRanges[] = { {50} }; // Before the hat mark
+const LedRange hatMarkRanges[] = { {34} }; // 帽子上的圈圈
+const LedRange afterHatMarkRanges[] = { {47} }; // After the hat mark
+
+BodyPart beforeHatMark;
+BodyPart hatMark;
+BodyPart afterHatMark;
+BodyPart hat;
 
 // === SHIRT === // 不包含袖子
-const LedRange lowerShirtRanges[] = { {0, 62} }; 
-const LedRange leftZipperRanges[] = { {62, 30} };
-const LedRange collarRanges[] = { {92, 90} };
-const LedRange rightZipperRanges[] = { {313, 30} };
-const LedRange shirtRanges[] = {lowerShirtRanges[0], collarRanges[0], leftZipperRanges[0], rightZipperRanges[0]};
+const LedRange lowerShirtRanges[] = { {62} }; 
+const LedRange leftZipperRanges[] = { {30} };
+const LedRange collarRanges[] = { {90} };
+const LedRange rightZipperRanges[] = { {30} };
 
-BodyPart lowerShirt = {lowerShirtRanges, 1};
-BodyPart leftZipper = {leftZipperRanges, 1};
-BodyPart collar = {collarRanges, 1};
-BodyPart rightZipper = {rightZipperRanges, 1};
-BodyPart shirt = {shirtRanges, 4}; 
+BodyPart lowerShirt;
+BodyPart leftZipper;
+BodyPart collar;
+BodyPart rightZipper;
+BodyPart shirt; 
 
 // === ARMS === // 袖子
-const LedRange leftUpperArmRanges[] = { {505, 60} }; // Upper 包含袖口
-const LedRange leftLowerArmRanges[] = { {626, 41} };
-const LedRange rightUpperArmRanges[] = { {445, 60} }; // Upper 包含袖口
-const LedRange rightLowerArmRanges[] = { {343, 41} };
-const LedRange leftArmRanges[] = {leftUpperArmRanges[0], leftLowerArmRanges[0]}; // Upper 包含袖口
-const LedRange rightArmRanges[] = {rightUpperArmRanges[0], rightLowerArmRanges[0]}; // Upper 包含袖口
-const LedRange armsRanges[] = {leftUpperArmRanges[0], rightUpperArmRanges[0], leftLowerArmRanges[0], rightLowerArmRanges[0] };
-BodyPart leftUpperArm = {leftUpperArmRanges, 1};
-BodyPart leftLowerArm = {leftLowerArmRanges, 1};
-BodyPart rightUpperArm = {rightUpperArmRanges, 1};
-BodyPart rightLowerArm = {rightLowerArmRanges, 1};
-BodyPart leftArm = {leftArmRanges, 2};
-BodyPart rightArm = {rightArmRanges, 2};
-BodyPart arms = {armsRanges, 4};
+const LedRange leftUpperArmRanges[] = { {60} }; // Upper 包含袖口
+const LedRange leftLowerArmRanges[] = { {41} };
+const LedRange rightUpperArmRanges[] = { {60} }; // Upper 包含袖口
+const LedRange rightLowerArmRanges[] = { {41} };
+
+BodyPart leftUpperArm;
+BodyPart leftLowerArm;
+BodyPart rightUpperArm;
+BodyPart rightLowerArm;
+BodyPart leftArm;
+BodyPart rightArm;
+BodyPart arms;
 
 // === BODY === 衣服+袖子
-const LedRange bodyRanges[] = {lowerShirtRanges[0], collarRanges[0], leftZipperRanges[0], rightZipperRanges[0] , leftUpperArmRanges[0], rightUpperArmRanges[0], leftLowerArmRanges[0], rightLowerArmRanges[0] };
-BodyPart body = {bodyRanges, 8};
+BodyPart body;
 
 // === HANDS ===
-const LedRange leftHandRanges[] = { {565, 61} };
-const LedRange rightHandRanges[] = { {384, 61} };
-const LedRange handsRanges[] = {leftHandRanges[0], rightHandRanges[0] };
-BodyPart leftHand = {leftHandRanges, 1};
-BodyPart rightHand = {rightHandRanges, 1};
-BodyPart hands = {handsRanges, 2};
+const LedRange leftHandRanges[] = { {61} };
+const LedRange rightHandRanges[] = { {61} };
+
+BodyPart leftHand;
+BodyPart rightHand;
+BodyPart hands;
 
 // === LEGS ===
-const LedRange leftLegRanges[] = { {667, 52} };
-const LedRange rightLegRanges[] = { {855, 52} };
-const LedRange leftCrotchRanges[] = { {749, 38} };
-const LedRange rightCrotchRanges[] = { {787, 38} };
-const LedRange crotchRanges[] = {leftCrotchRanges[0], rightCrotchRanges[0] };
-const LedRange legsRanges[] = {leftLegRanges[0], rightLegRanges[0], leftCrotchRanges[0], rightCrotchRanges[0] };
-BodyPart leftLeg = {leftLegRanges, 1};
-BodyPart rightLeg = {rightLegRanges, 1};
-BodyPart leftCrotch = {leftCrotchRanges, 1};
-BodyPart rightCrotch = {rightCrotchRanges, 1};
-BodyPart crotch = {crotchRanges, 1};
-BodyPart legs = {legsRanges, 4};
+const LedRange leftLegRanges[] = { {52} };
+const LedRange rightLegRanges[] = { {52} };
+const LedRange leftCrotchRanges[] = { {38} };
+const LedRange rightCrotchRanges[] = { {38} };
+
+BodyPart leftLeg;
+BodyPart rightLeg;
+BodyPart leftCrotch;
+BodyPart rightCrotch;
+BodyPart crotch;
+BodyPart legs;
 
 // === FEET ===
-const LedRange leftFootRanges[] = { {719, 30} };
-const LedRange rightFootRanges[] = { {825, 30} };
-const LedRange feetRanges[] = {leftFootRanges[0], rightFootRanges[0] };
-BodyPart leftFoot = {leftFootRanges, 1};
-BodyPart rightFoot = {rightFootRanges, 1};
-BodyPart feet = {feetRanges, 2};
+const LedRange leftFootRanges[] = { {30} };
+const LedRange rightFootRanges[] = { {30} };
 
+BodyPart leftFoot;
+BodyPart rightFoot;
+BodyPart feet;
+
+// LED ranges in order of start values
+std::vector<LedRange> ledRanges = {
+	lowerShirtRanges[0],      
+	leftZipperRanges[0],      
+	collarRanges[0],          
+	beforeHatMarkRanges[0],   
+	hatMarkRanges[0],         
+	afterHatMarkRanges[0],    
+	rightZipperRanges[0],     
+	rightLowerArmRanges[0],   
+	rightHandRanges[0],       
+	rightUpperArmRanges[0],   
+	leftUpperArmRanges[0],    
+	leftHandRanges[0],        
+	leftLowerArmRanges[0],    
+	leftLegRanges[0],         
+	leftFootRanges[0],        
+	leftCrotchRanges[0],      
+	rightCrotchRanges[0],     
+	rightFootRanges[0],       
+	rightLegRanges[0]         
+};
+
+// Composite ranges that use other ranges
+std::vector<LedRange> hatRangesVec;
+std::vector<LedRange> shirtRangesVec;
+std::vector<LedRange> leftArmRangesVec;
+std::vector<LedRange> rightArmRangesVec;
+std::vector<LedRange> armsRangesVec;
+std::vector<LedRange> handsRangesVec;
+std::vector<LedRange> bodyRangesVec;
+std::vector<LedRange> crotchRangesVec;
+std::vector<LedRange> legsRangesVec;
+std::vector<LedRange> feetRangesVec;
+std::vector<LedRange> wholeRangesVec;
+// Body parts array
+BodyPart bodyParts[19]; // All individual body parts
+
+// Function to initialize LED ranges with proper start values
+void initializeLedRangeStarts() {
+	int currentStart = 0;
+	
+	// Initialize the start value for each LED range based on the previous range's start and length
+	for (size_t i = 0; i < ledRanges.size(); i++) {
+		ledRanges[i].start = currentStart;
+		currentStart += ledRanges[i].length;
+		
+		// Print debug info
+		Serial.print("Range ");
+		Serial.print(i);
+		Serial.print(": start=");
+		Serial.print(ledRanges[i].start);
+		Serial.print(", length=");
+		Serial.print(ledRanges[i].length);
+		Serial.print(", end=");
+		Serial.println(ledRanges[i].start + ledRanges[i].length - 1);
+	}
+	
+	// Update bodyParts array with the corresponding ranges from ledRanges
+	// Use a for loop to initialize bodyParts array
+	for (size_t i = 0; i < ledRanges.size(); i++) {
+		bodyParts[i] = {&ledRanges[i], 1};
+	}
+	// Initialize individual hat parts
+	beforeHatMark = {&ledRanges[3], 1};
+	hatMark = {&ledRanges[4], 1};
+	afterHatMark = {&ledRanges[5], 1};
+	
+	// Initialize lowerShirt, leftZipper, collar, rightZipper
+	lowerShirt = {&ledRanges[0], 1};
+	leftZipper = {&ledRanges[1], 1};
+	collar = {&ledRanges[2], 1};
+	rightZipper = {&ledRanges[6], 1};
+	
+	// Initialize arms
+	rightLowerArm = {&ledRanges[7], 1};
+	rightHand = {&ledRanges[8], 1};
+	rightUpperArm = {&ledRanges[9], 1};
+	leftUpperArm = {&ledRanges[10], 1};
+	leftHand = {&ledRanges[11], 1};
+	leftLowerArm = {&ledRanges[12], 1};
+	
+	// Initialize legs and feet
+	leftLeg = {&ledRanges[13], 1};
+	leftFoot = {&ledRanges[14], 1};
+	leftCrotch = {&ledRanges[15], 1};
+	rightCrotch = {&ledRanges[16], 1};
+	rightFoot = {&ledRanges[17], 1};
+	rightLeg = {&ledRanges[18], 1};
+	
+	
+	// Hat ranges (combining the three hat parts)
+	hatRangesVec = {ledRanges[3], ledRanges[4], ledRanges[5]};
+	hat = {hatRangesVec.data(), 3};
+	
+	// Shirt ranges
+	shirtRangesVec = {ledRanges[0], ledRanges[2], ledRanges[1], ledRanges[6]};
+	shirt = {shirtRangesVec.data(), 4};
+	
+	// Arm ranges
+	leftArmRangesVec = {ledRanges[10], ledRanges[12]};
+	leftArm = {leftArmRangesVec.data(), 2};
+	
+	rightArmRangesVec = {ledRanges[9], ledRanges[7]};
+	rightArm = {rightArmRangesVec.data(), 2};
+	
+	armsRangesVec = {ledRanges[10], ledRanges[9], ledRanges[12], ledRanges[7]};
+	arms = {armsRangesVec.data(), 4};
+	
+	// Hand ranges
+	handsRangesVec = {ledRanges[11], ledRanges[8]};
+	hands = {handsRangesVec.data(), 2};
+	
+	// Body ranges (shirt + arms)
+	bodyRangesVec = {ledRanges[0], ledRanges[2], ledRanges[1], ledRanges[6], 
+					ledRanges[10], ledRanges[9], ledRanges[12], ledRanges[7]};
+	body = {bodyRangesVec.data(), 8};
+	
+	// Crotch ranges
+	crotchRangesVec = {ledRanges[15], ledRanges[16]};
+	crotch = {crotchRangesVec.data(), 2};
+	
+	// Legs ranges
+	legsRangesVec = {ledRanges[13], ledRanges[18], ledRanges[15], ledRanges[16]};
+	legs = {legsRangesVec.data(), 4};
+	
+	// Feet ranges
+	feetRangesVec = {ledRanges[14], ledRanges[17]};
+	feet = {feetRangesVec.data(), 2};
+	
+	// Whole range
+	wholeRangesVec = {{0, NUM_LEDS}};
+	whole = {wholeRangesVec.data(), 1};
+	
+	// Verify the total LEDs matches our expected count
+	int totalLEDs = 0;
+	for (const auto& range : ledRanges) {
+		totalLEDs += range.length;
+	}
+	
+	Serial.print("Total LEDs calculated: ");
+	Serial.print(totalLEDs);
+	Serial.print(" vs defined NUM_LEDS: ");
+	Serial.println(NUM_LEDS);
+	
+	if (totalLEDs != NUM_LEDS) {
+		Serial.println("WARNING: Calculated LED count doesn't match NUM_LEDS!");
+	}
+}
 #pragma endregion
 
 #pragma region Color definition
 
 struct ColorSet {
-  CRGB whole      = CRGB::Black;
-  // HAT
-  CRGB hat        = CRGB::Black;
-  CRGB hatMark    = CRGB::Black;
-
-  // SHIRT
-  CRGB lowerShirt     = CRGB::Black;
-  CRGB leftZipper     = CRGB::Black;
-  CRGB rightZipper    = CRGB::Black;
-  CRGB collar         = CRGB::Black;
-  CRGB leftShirt      = CRGB::Black;
-  CRGB rightShirt     = CRGB::Black;
-  CRGB shirt          = CRGB::Black;
-
-  // ARMS
-  CRGB leftUpperArm   = CRGB::Black;
-  CRGB leftLowerArm   = CRGB::Black;
-  CRGB rightUpperArm  = CRGB::Black;
-  CRGB rightLowerArm  = CRGB::Black;
-  CRGB leftArm        = CRGB::Black;
-  CRGB rightArm       = CRGB::Black;
-  CRGB arms           = CRGB::Black;
-
-  // HANDS
-  CRGB leftHand       = CRGB::Black;
-  CRGB rightHand      = CRGB::Black;
-  CRGB hands          = CRGB::Black;
-
-  // BODY (shirt + arms)
-  CRGB body           = CRGB::Black;
-
-  // LEGS
-  CRGB leftLeg        = CRGB::Black;
-  CRGB rightLeg       = CRGB::Black;
-  CRGB leftCrotch     = CRGB::Black;
-  CRGB rightCrotch    = CRGB::Black;
-  CRGB crotch         = CRGB::Black;
-  CRGB legs           = CRGB::Black;
-
-  // FEET
-  CRGB leftFoot       = CRGB::Black;
-  CRGB rightFoot      = CRGB::Black;
-  CRGB feet           = CRGB::Black;
+	CRGB whole      = CRGB::Black;
+	CRGB hat        = CRGB::Black;
+	CRGB hatMark    = CRGB::Black;
+	CRGB collar     = CRGB::Black;
+	CRGB beforeHatMark = CRGB::Black;
+	CRGB afterHatMark = CRGB::Black;
+	CRGB lowerShirt = CRGB::Black;
+	CRGB leftZipper = CRGB::Black;
+	CRGB rightZipper= CRGB::Black;
+	CRGB leftShirt  = CRGB::Black;
+	CRGB rightShirt = CRGB::Black;
+	CRGB shirt      = CRGB::Black;
+	CRGB leftUpperArm = CRGB::Black;
+	CRGB leftLowerArm = CRGB::Black;
+	CRGB rightUpperArm= CRGB::Black;
+	CRGB rightLowerArm= CRGB::Black;
+	CRGB leftArm    = CRGB::Black;
+	CRGB rightArm   = CRGB::Black;
+	CRGB arms       = CRGB::Black;
+	CRGB leftHand   = CRGB::Black;
+	CRGB rightHand  = CRGB::Black;
+	CRGB hands      = CRGB::Black;
+	CRGB body       = CRGB::Black;
+	CRGB leftLeg    = CRGB::Black;
+	CRGB rightLeg   = CRGB::Black;
+	CRGB leftCrotch = CRGB::Black;
+	CRGB rightCrotch= CRGB::Black;
+	CRGB crotch     = CRGB::Black;
+	CRGB legs       = CRGB::Black;
+	CRGB leftFoot   = CRGB::Black;
+	CRGB rightFoot  = CRGB::Black;
+	CRGB feet       = CRGB::Black;
 };
+
  
  // 特殊顏色
 const ColorSet ALL_BLACK = []() {
@@ -371,7 +517,9 @@ void showBodyPartForBeats(BodyPart part, CRGB color, int beat_time){
 void fillColorSet(const ColorSet& color) {
   // === HAT ===
 if (color.hat != CRGB::Black) fillBodyPart(hat, color.hat);
+if (color.beforeHatMark != CRGB::Black) fillBodyPart(beforeHatMark, color.beforeHatMark);
 if (color.hatMark != CRGB::Black) fillBodyPart(hatMark, color.hatMark);
+if (color.afterHatMark != CRGB::Black) fillBodyPart(afterHatMark, color.afterHatMark);
 
 // === BODY ===
 if (color.body != CRGB::Black) fillBodyPart(body, color.body);
@@ -810,35 +958,38 @@ enum class AnimKind {
   }
   
   void Animation::paintColorSet() {
-    showBodyPartNoDelay(whole, cs->whole);
-    showBodyPartNoDelay(hat, cs->hat);
-    showBodyPartNoDelay(hatMark, cs->hatMark);
-    showBodyPartNoDelay(body, cs->body);
-    showBodyPartNoDelay(shirt, cs->shirt);
-    showBodyPartNoDelay(lowerShirt, cs->lowerShirt);
-    showBodyPartNoDelay(leftZipper, cs->leftZipper);
-    showBodyPartNoDelay(rightZipper, cs->rightZipper);
-    showBodyPartNoDelay(collar, cs->collar);
-    showBodyPartNoDelay(leftArm, cs->leftArm);
-    showBodyPartNoDelay(rightArm, cs->rightArm);
-    showBodyPartNoDelay(leftUpperArm, cs->leftUpperArm);
-    showBodyPartNoDelay(leftLowerArm, cs->leftLowerArm);
-    showBodyPartNoDelay(rightUpperArm, cs->rightUpperArm);
-    showBodyPartNoDelay(rightLowerArm, cs->rightLowerArm);
-    showBodyPartNoDelay(hands, cs->hands);
-    showBodyPartNoDelay(leftHand, cs->leftHand);
-    showBodyPartNoDelay(rightHand, cs->rightHand);
-    showBodyPartNoDelay(legs, cs->legs);
-    showBodyPartNoDelay(leftLeg, cs->leftLeg);
-    showBodyPartNoDelay(rightLeg, cs->rightLeg);
-    showBodyPartNoDelay(crotch, cs->crotch);
-    showBodyPartNoDelay(leftCrotch, cs->leftCrotch);
-    showBodyPartNoDelay(rightCrotch, cs->rightCrotch);
-    showBodyPartNoDelay(feet, cs->feet);
-    showBodyPartNoDelay(leftFoot, cs->leftFoot);
-    showBodyPartNoDelay(rightFoot, cs->rightFoot);
-    FastLED.show();
-  }
+	showBodyPartNoDelay(whole, cs->whole);
+	showBodyPartNoDelay(hat, cs->hat);
+	showBodyPartNoDelay(hatMark, cs->hatMark);
+	showBodyPartNoDelay(beforeHatMark, cs->beforeHatMark);
+	showBodyPartNoDelay(afterHatMark, cs->afterHatMark);
+	showBodyPartNoDelay(body, cs->body);
+	showBodyPartNoDelay(shirt, cs->shirt);
+	showBodyPartNoDelay(lowerShirt, cs->lowerShirt);
+	showBodyPartNoDelay(leftZipper, cs->leftZipper);
+	showBodyPartNoDelay(rightZipper, cs->rightZipper);
+	showBodyPartNoDelay(collar, cs->collar);
+	showBodyPartNoDelay(leftArm, cs->leftArm);
+	showBodyPartNoDelay(rightArm, cs->rightArm);
+	showBodyPartNoDelay(leftUpperArm, cs->leftUpperArm);
+	showBodyPartNoDelay(leftLowerArm, cs->leftLowerArm);
+	showBodyPartNoDelay(rightUpperArm, cs->rightUpperArm);
+	showBodyPartNoDelay(rightLowerArm, cs->rightLowerArm);
+	showBodyPartNoDelay(hands, cs->hands);
+	showBodyPartNoDelay(leftHand, cs->leftHand);
+	showBodyPartNoDelay(rightHand, cs->rightHand);
+	showBodyPartNoDelay(legs, cs->legs);
+	showBodyPartNoDelay(leftLeg, cs->leftLeg);
+	showBodyPartNoDelay(rightLeg, cs->rightLeg);
+	showBodyPartNoDelay(crotch, cs->crotch);
+	showBodyPartNoDelay(leftCrotch, cs->leftCrotch);
+	showBodyPartNoDelay(rightCrotch, cs->rightCrotch);
+	showBodyPartNoDelay(feet, cs->feet);
+	showBodyPartNoDelay(leftFoot, cs->leftFoot);
+	showBodyPartNoDelay(rightFoot, cs->rightFoot);
+	FastLED.show();
+}
+
   
   // ————— PLAYSTEP QUEUE —————
   struct PlayStep {
