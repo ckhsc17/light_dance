@@ -2,7 +2,7 @@
 #include <vector>
 
 // LED 燈條設定
-#define LED_PIN 4             // LED 燈條 Data Pin (可改成你的 GPIO)
+#define LED_PIN 13          // LED 燈條 Data Pin (可改成你的 GPIO)
 #define NUM_LEDS 910           // LED 顆數（請根據你的 LED 燈條數量設定）
 #define BRIGHTNESS 5        // 亮度 (0~255)
 #define LED_TYPE WS2812       // 燈條類型
