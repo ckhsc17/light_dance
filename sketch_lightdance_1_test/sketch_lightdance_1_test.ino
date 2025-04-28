@@ -275,8 +275,8 @@ struct Animation {
   static Animation Center(const BodyPart& bodyPart, CRGB color, int duration);
   static Animation showColorSetPlusParts(const ColorSet& colorset, const std::vector<const BodyPart*>& extraBodyParts, const std::vector<CRGB>& extraColor, int duration);
   static Animation ShowColor(const BodyPart& P, CRGB c, int dur);
-  static Animation Multi(const std::vector<Animation>& anims, int dur);
-  static Animation Sequential(const std::vector<Animation>& anims, int dur);
+  static Animation Multi(const std::vector<Animation>& anims);
+  static Animation Sequential(const std::vector<Animation>& anims);
   void begin();
   bool update();
 private:
@@ -354,18 +354,16 @@ Animation Animation::ShowColor(const BodyPart& P, CRGB c, int dur) {
   return a;
 }
 
-Animation Animation::Multi(const std::vector<Animation>& anims, int dur) {
+Animation Animation::Multi(const std::vector<Animation>& anims) {
   Animation a;
   a.kind = AnimKind::MULTI;
-  a.duration = dur;
   a.subAnimations = anims;
   return a;
 }
 
-Animation Animation::Sequential(const std::vector<Animation>& anims, int dur) {
+Animation Animation::Sequential(const std::vector<Animation>& anims) {
   Animation a;
   a.kind = AnimKind::SEQUENTIAL;
-  a.duration = dur;
   a.subAnimations = anims;
   a.sequentialIndex = 0;
   return a;
@@ -570,6 +568,72 @@ struct PlayStep {
   }
 };
 
+std::vector<Animation> LEFT_TO_RIGHT(CRGB color, int duration){
+	std::vector<Animation> animations;
+	int leftDur = duration / 5;
+
+	int midDur = duration * 2 / 5;
+	int halfMidDur = midDur / 2;
+
+	int rightDur = duration / 5;
+	
+	// 左手臂
+	animations.push_back(Animation::Center(leftHand, color, leftDur));
+	animations.push_back(Animation::Multi(
+		{
+			Animation::RTL(leftUpperArm, color, leftDur),
+			Animation::RTL(leftLowerArm, color, leftDur),
+		}
+	));
+
+	// 身體  
+	animations.push_back(Animation::Multi({
+		// 部位範圍為左到右 跑完整個 midDur
+		Animation::RTL(hat, color, midDur),
+		Animation::RTL(collar, color, midDur),
+		Animation::RTL(lowerShirt, color, midDur),
+
+		Animation::Sequential({
+			// 部位範圍為左半 跑半個 midDur
+			Animation::Multi({
+					Animation::RTL(leftZipper, color, halfMidDur),
+					Animation::Sequential({
+							Animation::RTL(leftLeg, color, halfMidDur/2),
+							Animation::RTL(leftCrotch, color, halfMidDur/2),
+						}
+					),
+					Animation::RTL(leftFoot, color, halfMidDur/2),
+				}
+			),
+
+			// 部位範圍為右半 跑半個 midDur
+			Animation::Multi(
+				{
+				Animation::RTL(rightZipper, color, halfMidDur),
+				Animation::Sequential({
+						Animation::RTL(rightLeg, color, halfMidDur/2),
+						Animation::RTL(rightCrotch, color, halfMidDur/2),
+					}
+				),
+				Animation::RTL(rightFoot, color, halfMidDur/2),
+				}
+				),
+			}
+		),
+		}
+	));
+	// 右手臂
+	animations.push_back(Animation::Center(rightHand, color, rightDur));
+	animations.push_back(Animation::Multi({
+			Animation::RTL(rightUpperArm, color, rightDur),
+			Animation::RTL(rightLowerArm, color, rightDur),
+		}
+	));
+	
+	return animations;
+}	
+
+
 #pragma endregion
 
 
@@ -604,28 +668,20 @@ void setup() {
 		animations.push_back(Animation::Center(hat, RED_1, BEAT_TIME*4));
 		animations.push_back(Animation::LTR(legs, YELLOW_1, BEAT_TIME*4));
 		animations.push_back(Animation::RTL(hands, PURPLE_1, BEAT_TIME*4));
-		sequence.push_back(PlayStep::Create(Animation::Multi(animations, BEAT_TIME*4)));
+		sequence.push_back(PlayStep::Create(Animation::Multi(animations)));
 		
+
 		for (int i = 1; i <= 100; i++){
 				setupPart_LTDO(i);
 		}
 		*/
+		sequence.push_back(PlayStep::Create(Animation::Sequential(LEFT_TO_RIGHT(WHITE_1, BEAT_TIME*4))));
+
 		sequence.push_back(PlayStep::Create(Animation::showColorSet(COLORSET_RAINBOW, 15000)));
 		totalSteps = sequence.size();
 }
 
 // HIGHLIGHT:
-/* Sequence Example
-sequence.push_back( PlayStep::Rainbow(BEAT_TIME*7, 0,1,150,255) );
-sequence.push_back( PlayStep::showColorSet(ALL_BLACK, BEAT_TIME) );
-
-if (PERSON == 1) {
-	sequence.push_back( PlayStep::showColorSet(COLORSET_1, BEAT_TIME*2) );
-} else {
-	sequence.push_back( PlayStep::showColorSet(ALL_BLACK, BEAT_TIME*2) );
-}
-sequence.push_back( PlayStep::LTR(leftHand, CRGB::Blue, BEAT_TIME) );
-*/
 
 void setupPart_LTDO(int partNumber) {
     Serial.println(partNumber);
