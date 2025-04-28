@@ -80,9 +80,9 @@ unsigned long nextBeatMillis = 0;
 // 5號 蔡冠毅
 // 6號 蔡仁瑋
 // 7號 蔡承佑
-const int DANCER = 2;
-#define PERSON 2            // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
-#define ROLE 3 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
+const int DANCER = 3;
+#define PERSON 3            // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
+#define ROLE 2 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
 
 // LED 燈條設定
 #define LED_PIN 13             // LED 燈條 Data Pin (可改成你的 GPIO)
@@ -430,7 +430,7 @@ const ColorSet COLORSET_2_1 = []() {
   const ColorSet COLORSET_2_3 = []() {
     ColorSet c;
     c.feet = YELLOW_1;
-    c.legs = LIGHT_YELLOW_3;
+    c.legs = YELLOW_2;
     c.body = LIGHT_GREEN_3;
     c.hat = PINK_3;
     c.hands = LIGHT_BLUE_3;
@@ -2899,7 +2899,7 @@ void setupPart_shutUAD(int partNumber) {
             // sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2)) );
             sequence.push_back( //3
                 PlayStep::Create(
-                    isMe({4, 2, 1, 3, 7}) ? Animation::LTR(whole, LIGHT_GREEN_3 BEAT_TIME_2)
+                    isMe({4, 2, 1, 3, 7}) ? Animation::LTR(whole, LIGHT_GREEN_3, BEAT_TIME_2)
                               : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
                 )
             );
@@ -2989,7 +2989,7 @@ void setupPart_shutUAD(int partNumber) {
                 }
                 for (int i = 0; i < 7; i++) {
                     sequence.push_back( PlayStep::Create(
-                        isMe({rightToLeft[i]}) 
+                        isMe({random[i]}) 
                             ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/3.5)
                             : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/3.5)
                     ));
@@ -3034,13 +3034,15 @@ void setupPart_shutUAD(int partNumber) {
                 )
             );
 
-            std::vector<int> random2 = {1,2,3};
-            for (int i = 0; i < 3; i++) {
-                sequence.push_back( PlayStep::Create(
-                    isMe({random2[i]}) 
-                        ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/3)
-                        : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/3)
-                ));
+            {
+                std::vector<int> random2 = {1,2,3};
+                for (int i = 0; i < 3; i++) {
+                    sequence.push_back( PlayStep::Create(
+                        isMe({random2[i]}) 
+                            ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/3)
+                            : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2/3)
+                    ));
+                }
             }
 
             break;
