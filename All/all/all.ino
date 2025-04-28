@@ -3003,46 +3003,47 @@ void setupPart_shutUAD(int partNumber) {
 }
 
 // 1
+
 void setupPart_LTDO(int partNumber) {
     Serial.println(partNumber);
     switch(partNumber)
 		{
-				case 1: 
-					sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*7, 0, 1, 150)) );
-					break;
-				case 2: // 登登登登登登登
-					sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME)) );
-					sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*6, 255, 1, 150)) );
-					break;
-				case 3: // 1號亮
-					if (PERSON == 1)
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
-					else
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
-					break;
-				case 4: // 全亮
-						sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*10, 120, 1, 150)) );
-					break;
-				case 5:
-					break;
-				case 6: // Said baby 4567暗 
-					if (PERSON >= 4 && PERSON <= 7)
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
-					else
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
-					break;
-				case 7: // Said baby 全暗 
-					sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
-					break;
-				case 8: // Said baby 全亮 
-					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
-					break;
-				case 9: 
-					sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
-					break;
-				case 10: // What you doing?
-					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
-					break;
+            case 1: 
+                sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*7, 0, 1, 150)) );
+                break;
+            case 2: // 登登登登登登登
+                sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME)) );
+                sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*6, 255, 1, 150)) );
+                break;
+            case 3: // 1號亮
+                if (PERSON == 1)
+                    sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+                else
+                    sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+                break;
+            case 4: // 全亮
+                    sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME*10, 120, 1, 150)) );
+                break;
+            case 5:
+                break;
+            case 6: // Said baby 4567暗 
+                if (PERSON >= 4 && PERSON <= 7)
+                    sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+                else
+                    sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+                break;
+            case 7: // Said baby 全暗 
+                sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
+                break;
+            case 8: // Said baby 全亮 
+                sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
+                break;
+            case 9: 
+                sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1.7)) );
+                break;
+            case 10: // What you doing?
+                sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1.3)) );
+                break;
 				case 11: // (What you doing?)
 					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
 					break;      
@@ -3106,9 +3107,9 @@ void setupPart_LTDO(int partNumber) {
 					break;
 				case 24: // to be alone
 					if (PERSON == 1)
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*3/2)) );
 					else
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
 					break;
 				case 25: // (woo woo) 全亮
 					sequence.push_back( PlayStep::Create(Animation::showColorSetPlusParts(ALL_WHITE, { &hands }, {YELLOW_1}, BEAT_TIME*2)) );
@@ -3116,9 +3117,9 @@ void setupPart_LTDO(int partNumber) {
 					break;  
 				case 26: // My house clean 1亮
 					if (PERSON == 1)
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*3/2)) );
 					else
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
 					break;
 				case 27: // (house clean)
 					if (PERSON == 1)
@@ -3127,7 +3128,7 @@ void setupPart_LTDO(int partNumber) {
 						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
 					break;
 				case 28: // My pool warm 全亮
-						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
+						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
 					break;
 				case 29: // (pool warm) 4 2 5 1 6 3 7
 					if (PERSON == 4)
@@ -3233,7 +3234,7 @@ void setupPart_LTDO(int partNumber) {
 				case 41: // no games 1 被敲一下 // 1 PURPLE
 					if (PERSON == 4 || PERSON == 7)
 						sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
-					else if (PERSON == 1){
+					else if (PERSON == 1 || PERSON == 3){
 						sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, PURPLE_1, BEAT_TIME/2)) );
 						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
 					}
@@ -3254,7 +3255,7 @@ void setupPart_LTDO(int partNumber) {
 				case 43: // I say 1 被敲一下 // 1 PURPLE
 					if (PERSON == 4 || PERSON == 7)
 							sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
-					else if (PERSON == 1){
+					else if (PERSON == 1 || PERSON == 3){
 						sequence.push_back( PlayStep::Create(Animation::ShowColor(whole, PURPLE_1, BEAT_TIME/2)) );
 						sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*3/2)) );
 					}

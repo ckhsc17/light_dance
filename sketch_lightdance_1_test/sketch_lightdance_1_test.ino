@@ -29,7 +29,6 @@ struct BodyPart {
 	int numRanges;
 };
 
-
 // === WHOLE ===
 const LedRange wholeRanges[] = { {NUM_LEDS} };
 BodyPart whole ;
@@ -817,14 +816,14 @@ void setup() {
 		animations.push_back(Animation::RTL(hands, PURPLE_1, BEAT_TIME*4));
 		sequence.push_back(PlayStep::Create(Animation::Multi(animations)));
 		
-
+*/
 		for (int i = 1; i <= 100; i++){
 				setupPart_LTDO(i);
 		}
 		
 		//sequence.push_back(PlayStep::Create(Animation::Sequential(LEFT_TO_RIGHT(PURPLE_1, BEAT_TIME*4))));
-*/
-		sequence.push_back(PlayStep::Create(Animation::showColorSet(COLORSET_RAINBOW, 200000)));
+
+		//sequence.push_back(PlayStep::Create(Animation::showColorSet(COLORSET_RAINBOW, 200000)));
 		totalSteps = sequence.size();
 }
 
@@ -865,10 +864,10 @@ void setupPart_LTDO(int partNumber) {
 					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
 					break;
 				case 9: 
-					sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*2)) );
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME*1.7)) );
 					break;
 				case 10: // What you doing?
-					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1)) );
+					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*1.3)) );
 					break;
 				case 11: // (What you doing?)
 					sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_1_FRONT, BEAT_TIME*2)) );
