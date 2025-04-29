@@ -1203,7 +1203,7 @@ void callback(char* topic, byte* message, unsigned int length) {
         before();
         FastLED.setBrightness(7);
         // 開始舞蹈特效
-        delay(125);
+        delay(250);
         danceRunning = true;
         danceWhatMYB();
     }
@@ -2859,10 +2859,10 @@ void playMain29() {
         timelineDelay(3 * BEAT_TIME_3 / 4);
 
         // -ful.
-        if(DANCER == 0 or DANCER == 1 or DANCER == 2){ // 1號 花花 or 2號 徐舒庭
+        if(DANCER == 0 or DANCER == 4 or DANCER == 2){ // 1號 花花 or 2號 徐舒庭
             fill_solid(leds, NUM_LEDS, BLUE_3);
         }
-        if(DANCER == 0 or DANCER == 4){ // 4號 許晉誠
+        if(DANCER == 0 or DANCER == 1){ // 4號 許晉誠
             fill_solid(leds, NUM_LEDS, LIGHT_PURPLE_3);
         }
         if(DANCER == 0 or DANCER == 3){ // 3號 小米
