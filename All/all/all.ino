@@ -2893,7 +2893,7 @@ void setupPart_shutUAD(int partNumber) {
     switch (partNumber) {
         case 1:
             // "Ooh, shut up and dance with me" 開頭 12拍
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*11)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*10)) );
 
             sequence.push_back(
                 PlayStep::Create(
