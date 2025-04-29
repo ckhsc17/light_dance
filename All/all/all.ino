@@ -1088,7 +1088,7 @@ void showReadySignal() {
     leds[secondLedIndex] = CRGB(255, 255, 255);  // 第800顆LED亮白色
     
     // 顯示
-    FastLED.setBrightness(50);  // 設定較高亮度以便明顯看到
+    FastLED.setBrightness(20);  // 設定較高亮度以便明顯看到
     FastLED.show();
     
     // 等待1秒
@@ -1176,8 +1176,19 @@ void callback(char* topic, byte* message, unsigned int length) {
         runAllAnimations();
         danceWhatMYB();
     }
+    else if (messageTemp == "ON1") {
+        Serial.println("開始 LED 表演...");
+        before();
+        FastLED.setBrightness(7);
+        // 開始舞蹈特效
+        danceRunning = true;
+        stepIndex = 0;
+        delay(1750);
+        runAllAnimations();
+    }
     else if (messageTemp == "ON2") {
         Serial.println("開始 LED 表演...");
+        before();
         FastLED.setBrightness(7);
 
         // 開始舞蹈特效
@@ -1189,6 +1200,7 @@ void callback(char* topic, byte* message, unsigned int length) {
     }
     else if (messageTemp == "ON3") {
         Serial.println("開始 LED 表演...");
+        before();
         FastLED.setBrightness(7);
         // 開始舞蹈特效
         delay(125);
@@ -1263,6 +1275,20 @@ void loop() {
     }
     client.loop();
     
+}
+
+
+void before() {
+    Serial.println("Test");
+    
+    showReadySignal();
+    delay(1000);
+    showReadySignal();
+    delay(1000);
+    showReadySignal();
+    delay(5000);
+    
+    stopEffect();
 }
 
 // What Makes You Beautiful 的 LED 執行串
