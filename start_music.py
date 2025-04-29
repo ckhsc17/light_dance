@@ -13,6 +13,10 @@ def play_music():
     music_path = "Light_Dance.m4a"
     os.system(f'afplay "{music_path}" &')  # 用 & 背景播放
 
+def play_music2():
+    music_path = "Light_Dance23.m4a"
+    os.system(f'afplay "{music_path}" &')  # 用 & 背景播放
+
 def play_music3():
     music_path = "light_whatMYB.mp3"
     os.system(f'afplay "{music_path}" &')  # 用 & 背景播放
@@ -31,6 +35,8 @@ def on_message(client, userdata, msg):
         play_music()
     elif msg.payload.decode() == "ON3":
         play_music3()
+    elif msg.payload.decode() == "ON2":
+        play_music2()
     elif msg.payload.decode() == "OFF":
         stop_music()
     elif msg.payload.decode() == "READY":

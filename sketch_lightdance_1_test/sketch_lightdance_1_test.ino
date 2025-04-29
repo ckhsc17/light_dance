@@ -817,13 +817,13 @@ void setup() {
 		sequence.push_back(PlayStep::Create(Animation::Multi(animations)));
 		
 */
-		for (int i = 1; i <= 100; i++){
-				setupPart_LTDO(i);
-		}
+		// for (int i = 1; i <= 100; i++){
+		// 		setupPart_LTDO(i);
+		// }
 		
 		//sequence.push_back(PlayStep::Create(Animation::Sequential(LEFT_TO_RIGHT(PURPLE_1, BEAT_TIME*4))));
 
-		//sequence.push_back(PlayStep::Create(Animation::showColorSet(COLORSET_RAINBOW, 200000)));
+		sequence.push_back(PlayStep::Create(Animation::showColorSet(COLORSET_RAINBOW, 200000)));
 		totalSteps = sequence.size();
 }
 
