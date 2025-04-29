@@ -3170,6 +3170,8 @@ void setupPart_shutUAD(int partNumber) {
     case 9:
         // "I said, 'You're holding back', she said, 'Shut up and dance with me'"
         {
+            std::vector<int> leftToRight = {7,3,6,1,5,2,4};
+            std::vector<int> rightToLeft = {4,2,5,1,6,3,7};
             for (int i = 0; i < 7; i++) { //1,2
                 sequence.push_back( PlayStep::Create(
                     isMe({leftToRight[i]})
