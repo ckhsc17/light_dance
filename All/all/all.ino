@@ -3155,7 +3155,7 @@ void setupPart_shutUAD(int partNumber) {
         sequence.push_back(
             PlayStep::Create(
                 isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*2)
-                          : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)
+                          : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*2)
             )
         );
         //3-4
@@ -3166,20 +3166,18 @@ void setupPart_shutUAD(int partNumber) {
             )
         );
 
-        // 5～8拍：快速閃爍
+        // 5～6拍：rainbow
         //嘗試閃rainbow
-        for (int i = 0; i < 6; i++) {
-            sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME_2/6, 100, 5, 100)) );
-            sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME_2/6, 150, 5, 100)) );
-            sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME_2/6, 200, 5, 100)) );
+        sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME_2*2, 150, 5, 100)) );
+
+        // 7: 快速閃爍
+        for (int i = 0; i < 3; i++) {
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/3)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/3)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2/3)) );
         }
-        /*
-        for (int i = 0; i < 12; i++) {
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/12)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/12)) );
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2/12)) );
-        }
-        */
+
+        //8
         sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)) );
         break;
 
