@@ -80,9 +80,9 @@ unsigned long nextBeatMillis = 0;
 // 5號 蔡冠毅
 // 6號 蔡仁瑋
 // 7號 蔡承佑
-const int DANCER = 3;
-#define PERSON 3            // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
-#define ROLE 2 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
+const int DANCER = 2;
+#define PERSON 2            // 1: 花 //2: 徐 //3: 米 //4: 瑋 //5: 毅 //6: 許 //7: 佑
+#define ROLE 3 // 1: 花花    2: 小米    3: 徐舒庭     4: 蔡仁瑋     5: 許晉誠     6: 蔡冠毅     7: 蔡承佑
 
 // LED 燈條設定
 #define LED_PIN 13             // LED 燈條 Data Pin (可改成你的 GPIO)
