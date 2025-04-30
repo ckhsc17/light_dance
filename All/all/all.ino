@@ -80,9 +80,9 @@ unsigned long nextBeatMillis = 0;
 // 5號 蔡冠毅
 // 6號 蔡仁瑋
 // 7號 蔡承佑
-const int DANCER = 3;
-#define PERSON 3            // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
-#define ROLE 2 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
+const int DANCER = 7;
+#define PERSON 7            // 1: 花 2: 徐 3: 米 4: 瑋 5: 毅 6: 許 7: 佑
+#define ROLE 7 // 1: 花花 2: 小米 3: 徐舒庭 4: 蔡仁瑋 5: 許晉誠 6: 蔡冠毅 7: 蔡承佑
 
 // LED 燈條設定
 #define LED_PIN 13             // LED 燈條 Data Pin (可改成你的 GPIO)
@@ -1075,7 +1075,7 @@ bool isMe(std::initializer_list<int> people) { // Bowen 判斷舞者
 // 裝置就緒指示燈
 void showReadySignal() {
     // 確保陣列索引在有效範圍內
-    int secondLedIndex = 799;  // 對應第800顆LED (索引從0開始)
+    int secondLedIndex = 849;  // 對應第800顆LED (索引從0開始)
     if (secondLedIndex >= NUM_LEDS) {
         secondLedIndex = NUM_LEDS - 1;  // 如果超出範圍，使用最後一顆
     }
@@ -1085,6 +1085,7 @@ void showReadySignal() {
     
     // 亮起第1顆和第800顆LED
     leds[0] = CRGB(255, 255, 255);  // 第1顆LED (索引為0)亮白色
+    leds[650] = CRGB(255, 255, 255);
     leds[secondLedIndex] = CRGB(255, 255, 255);  // 第800顆LED亮白色
     
     // 顯示
@@ -1093,6 +1094,54 @@ void showReadySignal() {
     
     // 等待1秒
     delay(1000);
+    
+    // 熄滅全部
+    FastLED.clear();
+    FastLED.show();
+
+    delay(500);
+
+    leds[0] = CRGB(255, 255, 255);  // 第1顆LED (索引為0)亮白色
+    leds[650] = CRGB(255, 255, 255);
+    leds[secondLedIndex] = CRGB(255, 255, 255);  // 第800顆LED亮白色
+    
+    // 顯示
+    FastLED.setBrightness(20);  // 設定較高亮度以便明顯看到
+    FastLED.show();
+    
+    // 等待1秒
+    delay(1000);
+    
+    // 熄滅全部
+    FastLED.clear();
+    FastLED.show();
+    
+    // 恢復原始亮度設定
+    FastLED.setBrightness(BRIGHTNESS);
+}
+
+void showEndSignal() {
+    // 確保陣列索引在有效範圍內
+    int secondLedIndex = 849;  // 對應第800顆LED (索引從0開始)
+    if (secondLedIndex >= NUM_LEDS) {
+        secondLedIndex = NUM_LEDS - 1;  // 如果超出範圍，使用最後一顆
+    }
+    
+    // 清除所有燈
+    FastLED.clear();
+    
+    leds[0] = CRGB(255, 255, 255);  // 第1顆LED (索引為0)亮白色
+    leds[10] = CRGB(255, 255, 255);
+    leds[650] = CRGB(255, 255, 255);
+    leds[600] = CRGB(255, 255, 255);
+    leds[secondLedIndex] = CRGB(255, 255, 255);
+    
+    // 顯示
+    FastLED.setBrightness(12);  // 設定較高亮度以便明顯看到
+    FastLED.show();
+    
+    // 等待1秒
+    delay(10000);
     
     // 熄滅全部
     FastLED.clear();
@@ -1180,23 +1229,26 @@ void callback(char* topic, byte* message, unsigned int length) {
         Serial.println("開始 LED 表演...");
         before();
         FastLED.setBrightness(7);
+        totalStep = secondSongIndex
         // 開始舞蹈特效
         danceRunning = true;
         stepIndex = 0;
         delay(1750);
         runAllAnimations();
+        showEndSignal();
     }
     else if (messageTemp == "ON2") {
         Serial.println("開始 LED 表演...");
         before();
         FastLED.setBrightness(7);
+        totalSteps = sequence.size();
 
         // 開始舞蹈特效
         danceRunning = true;
         stepIndex = secondSongIndex;
         delay(BEAT_TIME_2);
         runAllAnimations();
-        danceWhatMYB();
+        showEndSignal();
     }
     else if (messageTemp == "ON3") {
         Serial.println("開始 LED 表演...");
@@ -1209,8 +1261,14 @@ void callback(char* topic, byte* message, unsigned int length) {
     }
     else if (messageTemp == "OFF") {
         Serial.println("停止 LED 表演...");
-        stepIndex = 200;
+        stepIndex = 1000;
         danceRunning = false;  // 設置標誌以中斷舞蹈
+        stopEffect();
+    }
+    else if (messageTemp == "OFF3") {
+        Serial.println("停止 LED 表演...");
+        danceRunning = false;  // 設置標誌以中斷舞蹈
+        stepIndex = 1000;
         stopEffect();
     }
     
@@ -1286,7 +1344,7 @@ void before() {
     showReadySignal();
     delay(1000);
     showReadySignal();
-    delay(5000);
+    delay(3000);
     
     stopEffect();
 }
@@ -1296,16 +1354,6 @@ void danceWhatMYB() {
     Serial.println("What Makes You Beautiful 開始！");
     startTimeline();
     danceRunning = true;
-
-    // test color
-    // rainbowAllLeds(5000, 0, 2, 100, 250); // duration, startHue, hueStep, sat, val
-    // showColorSetForBeats(COLORSET_3_1_1, 8000);
-    // showColorSetForBeats(COLORSET_3_1_2, 8000);
-    // showColorSetForBeats(COLORSET_3_2, 8000);
-    // showColorSetForBeats(COLORSET_3_3, 8000);
-    // showColorSetForBeats(whiteAndColorSet(ORANGE_3), 8000);
-
-    // delay(30);
 
     playIntro(); // 前奏
     if (!shouldContinueDance()) { stopEffect(); return; }
@@ -2876,7 +2924,7 @@ void playMain29() {
         }
         FastLED.setBrightness(80);
         FastLED.show();
-        timelineDelay(9 * BEAT_TIME_3);
+        timelineDelay(13 * BEAT_TIME_3);
 
     }
 }
@@ -3196,6 +3244,9 @@ void setupPart_shutUAD(int partNumber) {
     case 9:
         // "I said, 'You're holding back', she said, 'Shut up and dance with me'"
         {
+            std::vector<int> leftToRight = {7,3,6,1,5,2,4};
+            std::vector<int> rightToLeft = {4,2,5,1,6,3,7};
+
             for (int i = 0; i < 7; i++) { //1,2
                 sequence.push_back( PlayStep::Create(
                     isMe({leftToRight[i]})

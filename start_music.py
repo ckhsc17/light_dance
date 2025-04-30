@@ -39,13 +39,13 @@ def on_message(client, userdata, msg):
     if msg.payload.decode() == "ON":
         play_music()
     elif msg.payload.decode() == "ON3":
-        time.sleep(10)
+        time.sleep(8)
         play_music3()
     elif msg.payload.decode() == "ON1":
-        time.sleep(10)
+        time.sleep(8)
         play_music1()
     elif msg.payload.decode() == "ON2":
-        time.sleep(10)
+        time.sleep(8)
         play_music2()
     elif msg.payload.decode() == "OFF":
         stop_music()
