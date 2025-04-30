@@ -80,9 +80,9 @@ unsigned long nextBeatMillis = 0;
 // 5號 蔡冠毅
 // 6號 蔡仁瑋
 // 7號 蔡承佑
-const int DANCER = 2;
-#define PERSON 2            // 1: 花 //2: 徐 //3: 米 //4: 瑋 //5: 毅 //6: 許 //7: 佑
-#define ROLE 3 // 1: 花花    2: 小米    3: 徐舒庭     4: 蔡仁瑋     5: 許晉誠     6: 蔡冠毅     7: 蔡承佑
+const int DANCER = 1;
+#define PERSON 1            // 1: 花 //2: 徐 //3: 米 //4: 瑋 //5: 毅 //6: 許 //7: 佑
+#define ROLE 1 // 1: 花花    2: 小米    3: 徐舒庭     4: 蔡仁瑋     5: 許晉誠     6: 蔡冠毅     7: 蔡承佑
 
 // LED 燈條設定
 #define LED_PIN 13             // LED 燈條 Data Pin (可改成你的 GPIO)
@@ -1339,11 +1339,11 @@ void loop() {
 void before() {
     Serial.println("Test");
     
-    showReadySignal();
+    showReadySignal(); // 2.5
     delay(1000);
-    showReadySignal();
+    showReadySignal(); // 2.5
     delay(1000);
-    showReadySignal();
+    showReadySignal(); // 2.5
     delay(3000);
     
     stopEffect();
@@ -3168,10 +3168,10 @@ void setupPart_shutUAD(int partNumber) {
 
         // 5～6拍：rainbow
         //嘗試閃rainbow
-        sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME_2*2, 150, 5, 100)) );
+        //sequence.push_back( PlayStep::Create(Animation::Rainbow(BEAT_TIME_2*2, 150, 5, 100)) );
 
         // 7: 快速閃爍
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 9; i++) {
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/3)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2/3)) );
             sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2/3)) );
