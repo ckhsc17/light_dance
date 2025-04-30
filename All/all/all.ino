@@ -1342,8 +1342,6 @@ void before() {
     showReadySignal(); // 2.5
     delay(1000);
     showReadySignal(); // 2.5
-    delay(1000);
-    showReadySignal(); // 2.5
     delay(3000);
     
     stopEffect();
