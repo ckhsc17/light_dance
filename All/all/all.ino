@@ -2994,8 +2994,8 @@ void setupPart_shutUAD(int partNumber) {
             );  
             sequence.push_back( //6-8
                 PlayStep::Create(
-                    isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)
-                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+                    isMe({1}) ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*3)
+                              : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*3)
                 )
             );
             break;
@@ -3196,8 +3196,6 @@ void setupPart_shutUAD(int partNumber) {
     case 9:
         // "I said, 'You're holding back', she said, 'Shut up and dance with me'"
         {
-            std::vector<int> leftToRight = {7,3,6,1,5,2,4};
-            std::vector<int> rightToLeft = {4,2,5,1,6,3,7};
             for (int i = 0; i < 7; i++) { //1,2
                 sequence.push_back( PlayStep::Create(
                     isMe({leftToRight[i]})
@@ -3214,8 +3212,8 @@ void setupPart_shutUAD(int partNumber) {
                 ));
             }
 
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)) ); //5 (shut) up and
-            sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)) );
+            sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2*2)) ); //5 (shut) up and
+            //sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)) );
             // "dance with me" 快速閃爍
             for (int i = 0; i < 4; i++) { //7-8
                 sequence.push_back( PlayStep::Create(Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2/6)) );
@@ -3230,12 +3228,41 @@ void setupPart_shutUAD(int partNumber) {
     case 10:
         // "This woman is my destiny, she said"
         // destiny要不要對拍點閃人？
-        sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)) );
-        
-        sequence.push_back( PlayStep::Create( //2-8
+        sequence.push_back( PlayStep::Create( //1-4
             isMe({2,3})
-                ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*7)
-                : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*7)
+                ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*4)
+                : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)
+        ));
+
+        // 5-6, destiny
+        sequence.push_back( PlayStep::Create( //5-6
+            isMe({2,3})
+                ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*2/3)
+                : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*2/3)
+        ));
+
+        sequence.push_back( PlayStep::Create( //5-6
+            isMe({2,3})
+                ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2*2/3)
+                : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*2/3)
+        ));
+
+        sequence.push_back( PlayStep::Create( //5-6
+            isMe({2,3})
+                ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2*2/3)
+                : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*2/3)
+        ));
+
+        sequence.push_back( PlayStep::Create( //7
+            isMe({2,3})
+                ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2)
+                : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
+        ));
+
+        sequence.push_back( PlayStep::Create( //8
+            isMe({2,3})
+                ? Animation::showColorSet(COLORSET_2_2, BEAT_TIME_2)
+                : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2)
         ));
         
         break;
@@ -3247,7 +3274,13 @@ void setupPart_shutUAD(int partNumber) {
                 ? Animation::showColorSet(COLORSET_2_3, BEAT_TIME_2*4)
                 : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*4)
         ));
-        // 5-8
+        // 5-6
+        sequence.push_back( PlayStep::Create(
+            isMe({6})
+                ? Animation::showColorSet(COLORSET_2_1, BEAT_TIME_2*2)
+                : Animation::showColorSet(ALL_BLACK, BEAT_TIME_2*2)
+        ));
+        // 7-8
         sequence.push_back( PlayStep::Create(Animation::showColorSet(ALL_BLACK, BEAT_TIME_2 * 2)) ); //給第三首的時間
         break;
 
