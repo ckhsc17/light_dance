@@ -19,7 +19,7 @@ def play_music1():
     os.system(f'afplay "{music_path}" &')  # 用 & 背景播放
 
 def play_music2():
-    music_path = "Light_Dance23.m4a"
+    music_path = "Light_Dance2.m4a"
     os.system(f'afplay "{music_path}" &')  # 用 & 背景播放
 
 def play_music3():
