@@ -1,9 +1,5 @@
 # light_dance
 
-好的，以下是一段**不使用表情符號**、偏向正式與技術導向的 GitHub 倉庫描述，包含你這個「光舞系統」的**設計目的、系統架構、技術堆疊與特色**，適合放在倉庫首頁或 `README.md` 開頭：
-
----
-
 ## LightDance: Distributed LED Choreography System with MQTT Synchronization
 
 This repository contains the full source code, configuration, and choreography logic for **LightDance**, a distributed light performance system designed for synchronized LED effects across multiple wearable or stationary devices. The system is intended for use in music-driven stage performances or interactive light installations.
